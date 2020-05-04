@@ -1,0 +1,35 @@
+*.pyc
+*.egg-info
+.cache/
+build/
+dist/
+.eggs/
+.idea/
+.pytest_cache
+.tox/
+__pycache__
+__pycache__/
+# test
+manage.py 
+testetable/
+db.sqlite3
+djangotables.egg-info/
+
+# Packages
+*.egg
+*.egg-info
+.coverage
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+
+#
+.vscode/
