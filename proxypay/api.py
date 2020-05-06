@@ -1,5 +1,10 @@
+# requests
 import requests
+
+# django
 from django.conf import settings
+
+# proxypay
 from .exceptions import ProxypayException
 
 
