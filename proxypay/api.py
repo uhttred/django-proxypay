@@ -34,8 +34,7 @@ def check_apikey(key):
 
     if not key:
         raise ProxypayException(
-            'API_AUTHORIZATION_KEY key is required', 
-            'Proxypay KeyError:'
+            'API_AUTHORIZATION_KEY key is required'
         )
 
     return key
@@ -43,7 +42,6 @@ def check_apikey(key):
 
 # ==========================================================================================================
     
-
 """Responsible for making all requests to proxypay"""
 
 class ProxypayAPI:
@@ -59,7 +57,7 @@ class ProxypayAPI:
             if hasattr( settings, 'PROXYPAY'):
                 configs = settings.PROXYPAY
             else:
-                raise ProxypayException('PROXYPAY key not found on settings', 'Proxypay KeyError:')
+                raise ProxypayException('PROXYPAY key not found on settings')
 
         # Proxypay API Private KEY
         key = check_apikey(configs.get('API_AUTHORIZATION_KEY'))
@@ -87,5 +85,6 @@ class ProxypayAPI:
             params=params
         )
 
+# ========================================================================================
 
 api = ProxypayAPI()

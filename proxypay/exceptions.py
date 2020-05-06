@@ -2,11 +2,10 @@
 
 class ProxypayException(Exception):
 
-    def __init__(self, message, prefix='ProxypayError'):
+    def __init__(self, message):
         #
         self.message = message 
-        self.prefix  = prefix
 
     def __str__(self):
         #
-        return f"{self.prefix}: {self.message}"
+        return f"{self.message}"
