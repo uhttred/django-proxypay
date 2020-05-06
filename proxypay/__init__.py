@@ -1,4 +1,4 @@
-# appi configuration
+# app configuration
 default_app_config = 'proxypay.apps.ProxypayConfig'
 
 # app version
