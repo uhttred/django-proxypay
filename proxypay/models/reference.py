@@ -66,7 +66,7 @@ class Reference(models.Model):
         # Dispatching Signal
         reference_paid.send(
             self.__class__, 
-            instance=self
+            reference=self
         )
 
         # return the instance
