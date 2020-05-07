@@ -16,8 +16,8 @@ from proxypay.exceptions import ProxypayKeyError, ProxypayValueError
 
 PP_SETTINGS_CONFIG_KEY                  = 'PROXYPAY'
 PP_CONFIG_API_TOKEN_KEY                 = 'PRIVATE_KEY'
+PP_CONFIG_API_ENTITY_KEY                = 'ENTITY'
 PP_CONFIG_API_ENV_KEY                   = 'ENV'
-PP_CONFIG_API_ENTITY_KEY                = 'ENTITY_ID'
 PP_CONFIG_DEFAULT_DEVELOPMENT_ENV       = 'sandbox'
 PP_CONFIG_DEFAULT_PRODUCTION_ENV        = 'production'
 PP_API_PRODUCTION_BASE_URL              = 'https://api.proxypay.co.ao'
@@ -32,7 +32,7 @@ def get_configurations():
     if hasattr( settings, PP_SETTINGS_CONFIG_KEY ):
         
         # getting the configuration for proxypay
-        configs = settings[PP_SETTINGS_CONFIG_KEY]
+        configs = eval(f"settings.{PP_SETTINGS_CONFIG_KEY}")
         
         # gettings api environment
         if configs.get(PP_CONFIG_API_ENV_KEY) is None:
@@ -47,10 +47,10 @@ def get_configurations():
                 )
         
         # getting api token key
-        token = configs.get(PP_CONFIG_API_ENV_KEY)
+        token = configs.get(PP_CONFIG_API_TOKEN_KEY)
         if not token:
             raise ProxypayValueError(
-                f"{PP_CONFIG_API_ENV_KEY} is required"
+                f"{PP_CONFIG_API_TOKEN_KEY} is required"
             )
 
         # getting entity

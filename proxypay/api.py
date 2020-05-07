@@ -29,7 +29,7 @@ class ProxypayAPI:
         self.__url = configs.get('url')
 
     # ==========================================================
-
+    
     ###
     ##  Utils
     # 
