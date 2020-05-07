@@ -1,11 +1,12 @@
-
+###
+##  Django Proxypay Exceptions
+#
 
 class ProxypayException(Exception):
+    pass
 
-    def __init__(self, message):
-        #
-        self.message = message 
+class ProxypayKeyError(KeyError):
+    pass
 
-    def __str__(self):
-        #
-        return f"{self.message}"
+class ProxypayValueError(Exception):
+    pass
