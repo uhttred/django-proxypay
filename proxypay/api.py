@@ -1,3 +1,7 @@
+###
+##  Django Proxypay API 
+#
+
 # requests 
 import requests
 
@@ -31,12 +35,33 @@ class ProxypayAPI:
     # ==========================================================
     
     ###
-    ##  Utils
+    ##  Interaction With Proxypay
     # 
 
-    def get_create_reference(self):
-        pass
-    
+    def get_reference_id(self):
+        
+        """
+        Get Generated Reference Id from Proxypay
+        Returns reference id (int as string) or False 
+        """
+
+        r = self.post('/reference_ids')
+        # response status
+        return r.json() if r.status_code == 200 else False
+
+    def create_or_update_reference(self, reference_id, data):
+
+        """
+        Creates or Update a Pament Reference by Reference Id
+        Returns Proxypay Payment Reference Object 
+
+        data = { amount, end_datetime, custom_fields }
+        """
+
+        r = self.put(f"/references/{reference_id}", data=data)
+        # response status
+        return True if r.status_code == 204 else False
+        
     # ==========================================================
 
     ###
@@ -44,11 +69,43 @@ class ProxypayAPI:
     #   
 
     def get(self, path, params={}):
+
         """ makes a GET request, path parameter must init with / """
-        return requests.get(f"{self.__url}{path}", 
-            headers=self.__headers,
-            params=params
-        )
+
+        with requests.get(f"{self.__url}{path}", params=params, headers=self.__headers,) as r:
+            return r
+
+    def post(self, path, data={}, params={}):
+
+        """ makes a POST request, path parameter must init with / """
+
+        with requests.post(f"{self.__url}{path}", json=data, params=params, headers=self.__headers,) as r:
+            return r
+
+    def put(self, path, data={}, params={}):
+
+        """ makes a PUT request, path parameter must init with / """
+
+        with requests.put(f"{self.__url}{path}", json=data, params=params, headers=self.__headers,) as r:
+            return r
+    
+    # ==========================================================
+    
+    ###
+    ##  Utils
+    # 
+
+    # def default_ok_response(self, r):
+
+    #     """Default response for requests Request"""
+
+    #     pass
+
+    # def default_error_response(self, r):
+
+    #     """Default response for requests Request"""
+
+    #     return
 
 # ==========================================================================================================
 

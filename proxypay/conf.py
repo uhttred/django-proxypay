@@ -18,6 +18,7 @@ PP_SETTINGS_CONFIG_KEY                  = 'PROXYPAY'
 PP_CONFIG_API_TOKEN_KEY                 = 'PRIVATE_KEY'
 PP_CONFIG_API_ENTITY_KEY                = 'ENTITY'
 PP_CONFIG_API_ENV_KEY                   = 'ENV'
+PP_CONFIG_REFS_EXPIRES_DAYS_KEY         = 'REFERENCE_DAYS'
 PP_CONFIG_DEFAULT_DEVELOPMENT_ENV       = 'sandbox'
 PP_CONFIG_DEFAULT_PRODUCTION_ENV        = 'production'
 PP_API_PRODUCTION_BASE_URL              = 'https://api.proxypay.co.ao'
@@ -68,6 +69,28 @@ def get_configurations():
             'url': PP_API_PRODUCTION_BASE_URL if environment == PP_CONFIG_DEFAULT_PRODUCTION_ENV else PP_API_DEVELOPMENT_BASE_URL
         }
 
+    raise ProxypayKeyError(
+        f"{PP_SETTINGS_CONFIG_KEY} key not found on settings"
+    )
+
+# =================================================================================================================================================
+
+def get_default_reference_expires_days():
+
+    """  """
+
+    if hasattr( settings, PP_SETTINGS_CONFIG_KEY ):
+        
+        # getting the configuration for proxypay
+        configs = eval(f"settings.{PP_SETTINGS_CONFIG_KEY}")
+        
+        # 
+        if configs.get(PP_CONFIG_REFS_EXPIRES_DAYS_KEY):
+            # 
+            return configs.get(PP_CONFIG_REFS_EXPIRES_DAYS_KEY)
+        #
+        return False
+    #
     raise ProxypayKeyError(
         f"{PP_SETTINGS_CONFIG_KEY} key not found on settings"
     )
