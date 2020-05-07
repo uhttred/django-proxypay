@@ -38,6 +38,8 @@ class ProxypayAPI:
     ##  Interaction With Proxypay
     # 
 
+    # get new reference
+
     def get_reference_id(self):
         
         """
@@ -48,6 +50,8 @@ class ProxypayAPI:
         r = self.post('/reference_ids')
         # response status
         return r.json() if r.status_code == 200 else False
+
+    # create or update a payment reference
 
     def create_or_update_reference(self, reference_id, data):
 
@@ -61,7 +65,19 @@ class ProxypayAPI:
         r = self.put(f"/references/{reference_id}", data=data)
         # response status
         return True if r.status_code == 204 else False
-        
+
+    # delete reference
+
+    def delete_reference(self, reference_id):
+
+        """
+        Delete a reference from Proxypay
+        """
+
+        r = self.delete(f"/references/{reference_id}")
+        # response status
+        return True if r.status_code == 204 else False
+  
     # ==========================================================
 
     ###
@@ -87,6 +103,13 @@ class ProxypayAPI:
         """ makes a PUT request, path parameter must init with / """
 
         with requests.put(f"{self.__url}{path}", json=data, params=params, headers=self.__headers,) as r:
+            return r
+
+    def delete(self, path, data={}, params={}):
+
+        """ makes a DELETE request, path parameter must init with / """
+
+        with requests.delete(f"{self.__url}{path}", json=data, params=params, headers=self.__headers,) as r:
             return r
     
     # ==========================================================
