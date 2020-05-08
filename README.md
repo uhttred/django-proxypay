@@ -32,7 +32,7 @@ At the moment the Django Proxypay is in development and outside [Pypi](https://p
 
 these are the officially supported python and package versions. Other versions will probably work
 
-## Configuations
+## Configurations
 
 As stated above, Django Proxypay is a Django Application. To configure your project you simply need to add ``proxypay`` in the installed applications and configure the ``PROXYPAY`` variable in the ``settings.py`` file
 
