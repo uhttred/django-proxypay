@@ -14,7 +14,20 @@ from proxypay.exceptions import ProxypayException
 from proxypay.signals import reference_paid
 
 # ==========================================================================================================
+
+###
+## Paymentt Status
+#
+
+PAYMENT_STATUS_PAID = 'paid'
+PAYMENT_STATUS_EXPIRED = 'expired'
+PAYMENT_STATUS_WAIT = 'wait'
+PAYMENT_STATUS_CANCELED = 'canceled'
+
+# ==========================================================================================================
  
+"""Proxypay References Model"""
+
 class Reference(models.Model):
 
     ###
@@ -25,10 +38,9 @@ class Reference(models.Model):
     reference           = models.IntegerField(unique=True)
     amount              = models.DecimalField(max_digits=12, decimal_places=2)
     custom_fields_text  = models.TextField(default='')
-    # paid status
-    paid                = models.BooleanField(default=False)
     # reference payment status: canceled, paid, expired, wait
-    payment_status      = models.CharField(max_length=50, default='wait')
+    payment_status      = models.CharField(max_length=10, default=PAYMENT_STATUS_WAIT)
+    payment_data_text   = models.TextField(default=None, null=True)
 
     # date
     created_at = models.DateTimeField(auto_now_add=True)
@@ -54,25 +66,40 @@ class Reference(models.Model):
 
     # update reference payment status to paid
 
-    def payment_done(self):
+    def paid(self, payment_data):
 
-        """update reference payment status to paid"""
+        """
+        Update reference payment status to paid
+        Suitable for use with Proxypay's Webhook
+        """
         
-        # changing fields
-        self.paid           = True
-        self.payment_status = 'paid'
-        # save instance
+        # passando os dados de pagamento na instancia
+        self.payment_data_text = json.dumps(payment_data)
+        self.payment_status    = PAYMENT_STATUS_PAID
         self.save()
-        # Dispatching Signal
-        reference_paid.send(
-            self.__class__, 
-            reference=self
-        )
+        #
+        self.__dispatch_paid_signal()
 
-        # return the instance
-        return self
+    # Check if a reference was paid
 
+    def check_payment(self):
 
+        """
+        Checks whether the referral payment has already been processed.
+        Initially check on the instanse, if it is not processed, check the Proxypay API to be sure. 
+        Returns payment data or false
+        """
+
+        if not self.payment:
+            # check from api
+            payment = api.check_reference_payment(self.reference)
+            # case already paid
+            if payment:
+                self.paid(payment)
+            # returns payment data or false
+            return payment
+        # returning the payment data already registered
+        return self.payment
 
     ###
     ## Property Methods
@@ -81,6 +108,12 @@ class Reference(models.Model):
     @property
     def fields(self):
         return json.loads(self.custom_fields_text)
+
+    # useful to check if payment was processed
+
+    @property
+    def payment(self):
+        return False if not self.payment_data_text else json.loads(self.payment_data_text)
 
     ###
     ## Classe Method
@@ -92,3 +125,14 @@ class Reference(models.Model):
     def __repr__(self):
         return f"Proxypay Reference: {self.reference}"
 
+    ###
+    ## Some Utils
+    #
+
+    def __dispatch_paid_signal(self):
+        # Dispatching Signal
+        reference_paid.send(
+            self.__class__, 
+            reference=self
+        )
+        

@@ -36,10 +36,15 @@ class Command(BaseCommand):
             })
             # response status
             if response.status_code == 200:
-                # update reference payment status
-                reference.payment_done()
-                # 
-                self.stdout.write(self.style.SUCCESS(f"Reference: <{reference.reference}>, paid successfully"))
+                # reconhecendo o pagamento
+                payment = api.check_reference_payment(reference.reference)
+                # check
+                if payment:
+                    # paid successfully
+                    reference.paid(payment)
+                    # 
+                    self.stdout.write(self.style.SUCCESS(f"Reference: <{reference.reference}>, paid successfully"))
+                else:
+                    self.stdout.write(self.style.ERROR(f"Error recognizing payment"))
             else:
-                #
                 self.stdout.write(self.style.ERROR(f"Proxypay returns {response.status_code} status code from API"))

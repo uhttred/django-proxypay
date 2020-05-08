@@ -38,6 +38,8 @@ class ProxypayAPI:
     ##  Interaction With Proxypay
     # 
 
+    # ------------------------ REFERENCES -----------------------
+
     # get new reference
 
     def get_reference_id(self):
@@ -77,7 +79,55 @@ class ProxypayAPI:
         r = self.delete(f"/references/{reference_id}")
         # response status
         return True if r.status_code == 204 else False
-  
+
+
+    # ------------------------ PAYMENTS -----------------------
+
+    # get unrecognized payments
+
+    def get_payments(self):
+        
+        """
+        Returns a list of all payments that have 
+        not yet been recognized
+        """
+
+        r = self.get('/payments')
+        # response status
+        return r.json() if r.status_code == 200 else False
+
+    # check reference payment status
+
+    def check_reference_payment(self, reference_id):
+
+        """
+        Checks if a reference has already been paid, if so, 
+        returns the payment data and eliminates the payment data in proxyapy
+
+        Make sure to update the reference (proxypay.models.Reference) as paid
+        """
+
+        # getting all unrecognized payments
+        payments = self.get_payments()
+
+        if payments:
+            for payment in payments:
+                if payment.get('reference_id') == reference_id:
+                    # acknowledge payment
+                    self.acknowledge_payment(payment.get('id'))
+                    # returns the paymen data
+                    return payment
+        
+        return False
+
+    # Acknowledges payment
+
+    def acknowledge_payment(self, payment_id):
+
+        r = self.delete(f"/payments/{payment_id}")
+        # response status
+        return True if r.status_code == 204 else False
+
     # ==========================================================
 
     ###
@@ -114,21 +164,6 @@ class ProxypayAPI:
     
     # ==========================================================
     
-    ###
-    ##  Utils
-    # 
-
-    # def default_ok_response(self, r):
-
-    #     """Default response for requests Request"""
-
-    #     pass
-
-    # def default_error_response(self, r):
-
-    #     """Default response for requests Request"""
-
-    #     return
 
 # ==========================================================================================================
 
