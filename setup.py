@@ -29,7 +29,10 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     license="MIT License",
     keywords=["django", "payments", "proxypay" ],
-    install_requires=["Django>=2"],
+    install_requires=[
+        "Django>=2",
+        "requests>=2"
+    ],
     python_requires=">=3.6",
     classifiers=[
         "Environment :: Web Environment",
