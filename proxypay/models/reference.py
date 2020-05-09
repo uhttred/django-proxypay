@@ -11,7 +11,7 @@ from django.db import models
 # proxypay stuff
 from proxypay.api import api
 from proxypay.exceptions import ProxypayException
-from proxypay.signals import reference_paid
+from proxypay.signals import reference_paid, reference_created
 
 # ==========================================================================================================
 
@@ -25,7 +25,22 @@ PAYMENT_STATUS_WAIT = 'wait'
 PAYMENT_STATUS_CANCELED = 'canceled'
 
 # ==========================================================================================================
- 
+
+"""Proxypay References Model Manager"""
+
+class ReferenceModelManager(models.Manager):
+
+    def create(self, **kwargs):
+        # creating the signal
+        reference = super(ReferenceModelManager, self).create(**kwargs)
+        # Dispatching Signal
+        reference_created.send(
+            reference.__class__, 
+            reference=reference
+        )
+        #
+        return reference
+
 """Proxypay References Model"""
 
 class Reference(models.Model):
@@ -45,6 +60,12 @@ class Reference(models.Model):
     # date
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    ###
+    ##  Manager
+    #
+
+    objects = ReferenceModelManager()
 
     ###
     ##  Methods

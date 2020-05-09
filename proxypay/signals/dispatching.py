@@ -16,5 +16,9 @@ reference_paid = django.dispatch.Signal([
     'reference'
 ])
 
+reference_created = django.dispatch.Signal([
+    'reference'
+])
+
 # =============================================================================
 
