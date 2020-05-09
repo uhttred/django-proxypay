@@ -52,6 +52,7 @@ class Reference(models.Model):
     # reference id
     reference           = models.IntegerField(unique=True)
     amount              = models.DecimalField(max_digits=12, decimal_places=2)
+    entity              = models.CharField(max_length=100, null=True, default=None)
     custom_fields_text  = models.TextField(default='')
     # reference payment status: canceled, paid, expired, wait
     payment_status      = models.CharField(max_length=10, default=PAYMENT_STATUS_WAIT)

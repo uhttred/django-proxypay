@@ -57,6 +57,7 @@ def create( amount, fields={}, days=None ):
             reference = Reference.objects.create(
                 reference=reference_id,
                 amount=amount,
+                entity=api.entity,
                 custom_fields_text=json.dumps(fields)
             )
 

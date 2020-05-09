@@ -14,8 +14,9 @@ from .conf import get_configurations
 
 class ProxypayAPI:
 
-    __headers  = {} # default api headers
-    __url      = '' # base api url
+    __headers  = {}     # default api headers
+    __url      = ''     # base api url
+    __entity   = None   # 
 
     def __init__(self):
 
@@ -30,7 +31,19 @@ class ProxypayAPI:
         }
 
         # base url
-        self.__url = configs.get('url')
+        self.__url    = configs.get('url')
+        # entity
+        self.__entity = configs.get('entity')
+    
+    # ==========================================================
+
+    ###
+    ##  Property Methids
+    # 
+
+    @property
+    def entity(self):
+        return self.__entity
 
     # ==========================================================
     
