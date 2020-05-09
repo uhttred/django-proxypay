@@ -107,7 +107,10 @@ from proxypay.signals import reference_paid, reference_created
 # receive a paid reference
 @receiver(reference_paid)
 def handle_paid_reference(sender, reference, **kwargs):
+    # will print out the reference
     print(f"Reference {reference.reference} was paid!")
+    # You can also check the payment data received  from Proxypay
+    print('(dict) Payment Data: ', reference.payment)
 
 # receive a created reference
 @receiver(reference_created)
