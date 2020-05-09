@@ -102,7 +102,7 @@ You can avoid manually checking for paid references. Django Proxypay comes with 
 
 To use, you only need to add the endpoint that will be used by the Proxypay API. As in the example below
 
-```pyhton
+```python
 # django stuffs
 from django.urls import path
 from django.contrib import admin
