@@ -98,7 +98,7 @@ payment = reference.check_payment()
 
 ### Working with Signals
 
-Signals are the best way to keep an eye on new reference or new payments
+Signals are the best way to keep an eye on new reference or new payments. So, in your ``signals.py`` file:
 
 ```python
 from django.dispatch import receiver
@@ -111,7 +111,7 @@ def handle_paid_reference(sender, reference, **kwargs):
 
 # receive a created reference
 @receiver(reference_created)
-def handle_paid_reference(sender, reference, **kwargs):
+def handle_created_reference(sender, reference, **kwargs):
     print(f"Reference {reference.reference} was created!")
 ```
 
