@@ -56,7 +56,7 @@ def get_configurations():
 
         # getting entity
         entity = configs.get(PP_CONFIG_API_ENTITY_KEY)
-        if not token:
+        if not entity:
             raise ProxypayValueError(
                 f"{PP_CONFIG_API_ENTITY_KEY} is required"
             )
