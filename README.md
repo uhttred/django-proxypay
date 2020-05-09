@@ -30,16 +30,15 @@ At the moment the Django Proxypay is in development and outside [Pypi](https://p
 * Django ``2.2; 3.0``
 * requests ``2.23``
 
-these are the officially supported python and package versions. Other versions will probably work
+These are the officially supported python and package versions. Other versions will probably work
 
 ## Configurations
 
-As stated above, Django Proxypay is a Django Application. To configure your project you simply need to add ``proxypay`` in the installed applications and configure the ``PROXYPAY`` variable in the ``settings.py`` file
+As stated above, Django Proxypay is a Django Application. To configure your project you simply need to add ``proxypay`` to your ``INSTALLED_APPS`` and configure the ``PROXYPAY`` variable in the ``settings.py`` file
 
 Like the example below, file ``settings.py``:
 
 ```python
-
 # Your project applications
 INSTALLED_APPS = [
     'proxypay',
@@ -59,17 +58,17 @@ PROXYPAY = {
     # If set, the value must be sandbox or production
     'ENV': os.environ.get('PROXYPAY_ENV')
 }
-
 ```
 
 **Note**: That's all, make sure to run the database migrations. Using the commands ``python manage.py makemigrations`` and ``python manage.py migrate`` to generate a table of References in the database
 
-## Base Usage
+## Basic use
 
-Use the `` proxypay.references.create`` method to create new references. This method will return an instance of `` proxypay.models.Reference``
+### Creating references and verifying payments
+
+Use the `` proxypay.references.create`` method to create new references. This method will return an instance of `` proxypay.models.Reference``. Which you can use to verify payment and other data such as related entity, reference id and more
 
 ```python
-
 from proxypay.references import create
 
 ###
@@ -95,7 +94,25 @@ reference2 = create(
 # Check if a reference was paid / Acknowledge Payment for this reference
 # will return False or the payment data from Proxypay API in a dict structure
 payment = reference.check_payment() 
+```
 
+### Working with Signals
+
+Signals are the best way to keep an eye on new reference or new payments
+
+```python
+from django.dispatch import receiver
+from proxypay.signals import reference_paid, reference_created
+
+# receive a paid reference
+@receiver(reference_paid)
+def handle_paid_reference(sender, reference, **kwargs):
+    print(f"Reference {reference.reference} was paid!")
+
+# receive a created reference
+@receiver(reference_created)
+def handle_paid_reference(sender, reference, **kwargs):
+    print(f"Reference {reference.reference} was created!")
 ```
 
 ## Mock Payment
