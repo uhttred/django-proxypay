@@ -11,7 +11,7 @@ from django.http import HttpResponse
 # proxypay stuffs
 from proxypay.models import Reference
 from proxypay.references import get
-from proxypay.conf import get_configurations
+from proxypay.conf import get_private_key
 
 # ==============================================================================================
 
@@ -20,7 +20,7 @@ def check_signature(signature, raw_http_body):
     """Check Proxypay Signature"""
 
     # getting private key from settings.py
-    private_key = get_configurations().get('token')
+    private_key = get_private_key()
     # calcutaing the signature
     computed_signature = hmac.new(
         private_key,

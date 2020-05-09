@@ -96,3 +96,15 @@ def get_default_reference_expires_days():
     )
 
 # =================================================================================================================================================
+
+def get_private_key():
+    #
+    if hasattr( settings, PP_SETTINGS_CONFIG_KEY ):
+        # getting the configuration for proxypay
+        configs = eval(f"settings.{PP_SETTINGS_CONFIG_KEY}")
+        #
+        return configs.get(PP_CONFIG_API_TOKEN_KEY)
+    #
+    return None
+
+# =================================================================================================================================================
