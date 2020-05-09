@@ -21,14 +21,14 @@ def check_signature(signature, raw_http_body):
 
     # getting private key from settings.py
     private_key = get_private_key()
-    # calcutaing the signature
-    computed_signature = hmac.new(
+    # calc the signature
+    calc_signature = hmac.new(
         private_key,
         msg=raw_http_body,
         digestmod=hashlib.sha256
     ).hexdigest()
     # chack vall
-    return signature == computed_signature
+    return signature == calc_signature
 
 # ==============================================================================================
 
