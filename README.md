@@ -96,6 +96,29 @@ reference2 = create(
 payment = reference.check_payment() 
 ```
 
+### Proxypay Webhooks, watching for payments
+
+You can avoid manually checking for paid references. Django Proxypay comes with a view ready to keep an eye on the Proxypay API Webhooks. This view will check the signature, find the related `` proxypay.models.Reference`` instance and update as paid. At the end it will trigger the `` reference_paid`` signal.
+
+To use, you only need to add the endpoint that will be used by the Proxypay API. As in the example below
+
+```pyhton
+# django stuffs
+from django.urls import path
+from django.contrib import admin
+
+# proxypay watch payments view
+from proxypay.payments import watch_payments
+
+urlpatterns = [
+    path( "admin/", admin.site.urls),
+    # Note, the URL name can be whatever you want
+    path('proxypay-payments', watch_payments),
+]
+```
+
+**Note**: Don't forget to configure the endpoint in your Proxypay account
+
 ### Working with Signals
 
 Signals are the best way to keep an eye on new reference or new payments. So, in your ``signals.py`` file:
