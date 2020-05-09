@@ -100,7 +100,7 @@ payment = reference.check_payment()
 
 You can avoid manually checking for paid references. Django Proxypay comes with a view ready to keep an eye on the Proxypay API Webhooks. This view will check the signature, find the related `` proxypay.models.Reference`` instance and update as paid. At the end it will trigger the `` reference_paid`` signal.
 
-To use, you only need to add the endpoint that will be used by the Proxypay API. As in the example below
+To use, you only need to add the endpoint that will be used by the Proxypay API. As in the example below. In your `` urls.py`` file:
 
 ```python
 # django stuffs
