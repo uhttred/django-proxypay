@@ -3,7 +3,7 @@
 #
 
 # django stuff
-from django.http import JsonResponse
+from django.http import HttpResponse
 
 # proxypay stuffs
 from proxypay.models import Reference
@@ -33,10 +33,10 @@ def watch_payments(request):
                     payment
                 )
                 # paiment done
-                return JsonResponse(status=200)
+                return HttpResponse(status=200)
             # reference not found
-            return JsonResponse(status=404)
+            return HttpResponse(status=404)
         # signatue forbidden
-        return JsonResponse(status=403)
+        return HttpResponse(status=403)
     # method not allowed
-    return JsonResponse(status=405)
+    return HttpResponse(status=405)
