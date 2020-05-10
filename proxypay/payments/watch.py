@@ -3,10 +3,11 @@
 #
 
 # pyhton stuffs
-import hmac, hashlib
+import hmac, hashlib, json
 
 # django stuff
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 # proxypay stuffs
 from proxypay.models import Reference
@@ -23,7 +24,7 @@ def check_signature(signature, raw_http_body):
     private_key = get_private_key()
     # calc the signature
     calc_signature = hmac.new(
-        private_key,
+        bytearray(private_key, 'utf-8'),
         msg=raw_http_body,
         digestmod=hashlib.sha256
     ).hexdigest()
@@ -32,6 +33,7 @@ def check_signature(signature, raw_http_body):
 
 # ==============================================================================================
 
+@csrf_exempt
 def watch_payments(request):
 
     """View to watch Proxyapy API Webhook"""
@@ -42,7 +44,7 @@ def watch_payments(request):
         # check signature
         if check_signature(signature, request.body):
             # payment data
-            payment = request.POST
+            payment = json.loads(request.body)
             # gettings the referenc by reference id
             reference = get(payment.get('reference_id'))
             #
