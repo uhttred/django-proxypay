@@ -34,7 +34,7 @@ def create( amount, fields={}, days=None ):
             raise ProxypayException('Error creating reference, <fields> Add 9 max custom fields')
 
         # add reference_id for auto payment purpose
-        fields[PP_AUTO_PAYMENT_REF_ID] = reference_id
+        fields[PP_AUTO_PAYMENT_REF_ID] = str(reference_id)
         
         # reference data
         data = { 'amount': amount, 'custom_fields': fields }
