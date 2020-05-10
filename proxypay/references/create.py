@@ -7,7 +7,7 @@ import datetime, json
 
 # proxypay stuffs
 from proxypay.api import api
-from proxypay.conf import get_default_reference_expires_days
+from proxypay.conf import get_default_reference_expires_days, PP_AUTO_PAYMENT_REF_ID
 from proxypay.exceptions import ProxypayException
 from proxypay.models import Reference
 
@@ -24,6 +24,17 @@ def create( amount, fields={}, days=None ):
     reference_id = api.get_reference_id()
 
     if reference_id:
+        
+        ###
+        ## Custom Fields
+        #
+
+        if len(fields) > 9:
+            # 
+            raise ProxypayException('Error creating reference, <fields> Add 9 max custom fields')
+
+        # add reference_id for auto payment purpose
+        fields[PP_AUTO_PAYMENT_REF_ID] = reference_id
         
         # reference data
         data = { 'amount': amount, 'custom_fields': fields }
