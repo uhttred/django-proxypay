@@ -3,6 +3,10 @@ HISTORY
 
 > Insert new release notes below this line
 
+## 1.0.1 ( 11, May, 2020 )
+
+* Just update the docs
+
 ## 1.0.0 ( 11, May, 2020 )
 
 * Initial release
