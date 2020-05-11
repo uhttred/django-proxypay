@@ -1,7 +1,9 @@
 django-proxypay
 =================
 
-Django Proxypay is a [Django Framework](https://www.djangoproject.com/) application/library that facilitates the integration of your Django project with the [Proxypay](https://proxypay.co.ao/) [API](https://developer.proxypay.co.ao/v2/). Allowing to generate referrals, recognize payments and look through Proxypay's webhooks
+Django Proxypay is a [Django Framework](https://www.djangoproject.com/) application/library that facilitates the integration of your Django project with the [Proxypay](https://proxypay.co.ao/) [API](https://developer.proxypay.co.ao/v2/). Allowing to generate referrals, recognize payments and look through Proxypay's webhooks.
+
+> If you are looking for a Python alternative that doesn't use any framework, maybe [proxypay-py](https://pypi.org/project/proxypay-py/) could be useful. [proxypay-py](https://pypi.org/project/proxypay-py/) is the official Proxypay library maintained by [TimeBoxed](http://timeboxed.co.ao/)
 
 ----------------------------------------------------------------------------------
 
@@ -20,7 +22,7 @@ The Django Proxypay really comes to facilitate the integration to the Proxypay A
 
 ## Installation
 
-At the moment the Django Proxypay is in development and outside [Pypi](https://pypi.org/). But soon you will be able to install it simply and practice using the ``pip``:
+Simple **django-proxypay** can be installed with ``pip``:
 
     pip install django-proxypay
 
