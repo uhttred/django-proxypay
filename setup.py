@@ -10,8 +10,8 @@ setuptools.setup(
     name="django-proxypay",
     version=VERSION,
     description=(
-        "Django Proxypay is a django library to interact with the proxypay in a simple way."
-        "Useful for generating referrals and processing payments"
+        "Django Proxypay is a Django Framework application/library that facilitates the integration of your Django project with the"
+        "Proxypay API. Allowing to generate referrals, recognize payments and look through Proxypay's webhooks"
     ),
     long_description=readme,
     long_description_content_type="text/markdown",
@@ -28,7 +28,7 @@ setuptools.setup(
     },
     packages=setuptools.find_packages(),
     license="MIT License",
-    keywords=["django", "payments", "proxypay" ],
+    keywords=["django", "payments", "proxypay", "django-proxypay" ],
     install_requires=[
         "Django>=2",
         "requests>=2"

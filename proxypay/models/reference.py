@@ -7,6 +7,7 @@ import json
 
 # django stuff
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 # proxypay stuff
 from proxypay.api import api
@@ -50,17 +51,17 @@ class Reference(models.Model):
     #
 
     # reference id
-    reference           = models.IntegerField(unique=True)
-    amount              = models.DecimalField(max_digits=12, decimal_places=2)
-    entity              = models.CharField(max_length=100, null=True, default=None)
-    custom_fields_text  = models.TextField(default='')
+    reference           = models.IntegerField(verbose_name=_('Reference'), unique=True, editable=False)
+    amount              = models.DecimalField(verbose_name=_('Amount'), max_digits=12, decimal_places=2, editable=False)
+    entity              = models.CharField(verbose_name=_('Entity'), max_length=100, null=True, default=None, editable=False)
+    custom_fields_text  = models.TextField(default='', editable=False)
     # reference payment status: canceled, paid, expired, wait
-    payment_status      = models.CharField(max_length=10, default=PAYMENT_STATUS_WAIT)
-    payment_data_text   = models.TextField(default=None, null=True)
+    payment_status      = models.CharField(max_length=10, default=PAYMENT_STATUS_WAIT, editable=False)
+    payment_data_text   = models.TextField(default=None, null=True, editable=False)
 
     # date
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(verbose_name=_('Created At'), auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name=_('Update At'), auto_now=True)
 
     ###
     ##  Manager
