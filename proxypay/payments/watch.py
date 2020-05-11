@@ -49,15 +49,15 @@ def watch_payments(request):
             reference_id = payment.get('custom_fields', {}).get(PP_AUTO_PAYMENT_REF_ID)
             # gettings the referenc by reference id
             reference = get(reference_id)
-            #
+            # chack reference
             if reference:
-                #
+                # update as paid
                 reference.paid( payment )
                 # paiment done
                 return HttpResponse(status=200)
             # reference not found
             return HttpResponse(status=404)
-        # signatue forbidden
+        # forbidden signatue
         return HttpResponse(status=403)
     # method not allowed
     return HttpResponse(status=405)

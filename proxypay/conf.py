@@ -88,7 +88,15 @@ def get_default_reference_expires_days():
         # 
         if configs.get(PP_CONFIG_REFS_EXPIRES_DAYS_KEY):
             # 
-            return configs.get(PP_CONFIG_REFS_EXPIRES_DAYS_KEY)
+            days = configs.get(PP_CONFIG_REFS_EXPIRES_DAYS_KEY)
+            #
+            if type(days) is int:
+                return days
+            #
+            if type(days) is str:
+                if days.isnumeric():
+                    return int(days)
+            raise ProxypayValueError(f"{PP_CONFIG_REFS_EXPIRES_DAYS_KEY} value expected to be an integer")
         #
         return False
     #
