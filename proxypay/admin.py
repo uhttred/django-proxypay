@@ -9,8 +9,8 @@ class ReferenceAdmin(admin.ModelAdmin):
         'entity', 
         'amount', 
         'paid', 
-        'payment_local',
         'payment_tarminal',
+        'payment_local',
         'created_at',
         'updated_at'
     )
@@ -43,7 +43,9 @@ class ReferenceAdmin(admin.ModelAdmin):
             return obj.payment.get('terminal_type')
         return None
             
-    paid.description = _('Paid X')
+    paid.short_description = _('Paid')
+    payment_local.short_description = _('Paid In')
+    payment_tarminal.short_description = _('Paid With')
 
     ###
     ## Permissions
