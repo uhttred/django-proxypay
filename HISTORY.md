@@ -3,6 +3,8 @@ HISTORY
 
 > Insert new release notes below this line
 
+* Add ``expires_in`` property on ``proxypay.models.Reference`` model
+
 ## 1.0.1 ( 11, May, 2020 )
 
 * Just update the docs
