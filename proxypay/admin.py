@@ -11,6 +11,8 @@ class ReferenceAdmin(admin.ModelAdmin):
         'paid', 
         'payment_tarminal',
         'payment_local',
+        'expired',
+        'expires_in',
         'created_at',
         'updated_at'
     )
@@ -32,6 +34,9 @@ class ReferenceAdmin(admin.ModelAdmin):
 
     def paid(self, obj):
         return _('Yes') if obj.payment else _('No')
+
+    def expired(self, obj):
+        return _('Yes') if obj.expired else _('No')
 
     def payment_local(self, obj):
         if obj.payment:

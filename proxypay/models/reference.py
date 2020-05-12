@@ -8,6 +8,7 @@ import json
 # django stuff
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils.timezone import now
 
 # proxypay stuff
 from proxypay.api import api
@@ -60,6 +61,7 @@ class Reference(models.Model):
     payment_data_text   = models.TextField(default=None, null=True, editable=False)
 
     # date
+    expires_in = models.DateTimeField(null=True, default=None)
     created_at = models.DateTimeField(verbose_name=_('Created At'), auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name=_('Update At'), auto_now=True)
 
@@ -137,6 +139,14 @@ class Reference(models.Model):
     @property
     def payment(self):
         return False if not self.payment_data_text else json.loads(self.payment_data_text)
+
+    # expired status
+
+    @property
+    def expired(self):
+        if self.expires_in:
+            return self.expires_in < now()
+        return False
 
     ###
     ## Classe Method

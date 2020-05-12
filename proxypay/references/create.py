@@ -11,6 +11,9 @@ from proxypay.conf import get_default_reference_expires_days, PP_AUTO_PAYMENT_RE
 from proxypay.exceptions import ProxypayException
 from proxypay.models import Reference
 
+# django stuff
+from django.utils.timezone import now
+
 # ==========================================================================================================
  
 def create( amount, fields={}, days=None ):
@@ -37,7 +40,8 @@ def create( amount, fields={}, days=None ):
         fields[PP_AUTO_PAYMENT_REF_ID] = str(reference_id)
         
         # reference data
-        data = { 'amount': amount, 'custom_fields': fields }
+        data         = { 'amount': amount, 'custom_fields': fields }
+        end_datetime = None
         
         ###
         ## days to expires
@@ -49,7 +53,7 @@ def create( amount, fields={}, days=None ):
 
         if days and type(days) is int:
             # end_datetime
-            end_datetime = datetime.datetime.today() + datetime.timedelta(days=days)
+            end_datetime = now() + datetime.timedelta(days=days)
             # data
             data['end_datetime'] = end_datetime.strftime("%Y-%m-%d")
 
@@ -69,7 +73,9 @@ def create( amount, fields={}, days=None ):
                 reference=reference_id,
                 amount=amount,
                 entity=api.entity,
-                custom_fields_text=json.dumps(fields)
+                custom_fields_text=json.dumps(fields),
+                # By default, proxypay references expire at the end of each day
+                expires_in=end_datetime.replace(hour=23,minute=59,second=59) if end_datetime else None
             )
 
             return reference
