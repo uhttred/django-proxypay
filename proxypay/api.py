@@ -34,11 +34,11 @@ class ProxypayAPI:
         self.__url    = configs.get('url')
         # entity
         self.__entity = configs.get('entity')
-    
+
     # ==========================================================
 
     ###
-    ##  Property Methids
+    ##  Property Methods
     # 
 
     @property
