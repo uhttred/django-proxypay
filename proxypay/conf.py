@@ -23,7 +23,6 @@ PP_CONFIG_DEFAULT_DEVELOPMENT_ENV       = 'sandbox'
 PP_CONFIG_DEFAULT_PRODUCTION_ENV        = 'production'
 PP_API_PRODUCTION_BASE_URL              = 'https://api.proxypay.co.ao'
 PP_API_DEVELOPMENT_BASE_URL             = 'https://api.sandbox.proxypay.co.ao'
-PP_AUTO_PAYMENT_REF_ID                  = 'dj_pp_reference_id'
 
 # =================================================================================================================================================
 

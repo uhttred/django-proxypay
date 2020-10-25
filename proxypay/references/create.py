@@ -3,11 +3,11 @@
 #
 
 # python stuffs
-import datetime, json
+import datetime
 
 # proxypay stuffs
 from proxypay.api import api
-from proxypay.conf import get_default_reference_expires_days, PP_AUTO_PAYMENT_REF_ID
+from proxypay.conf import get_default_reference_expires_days
 from proxypay.exceptions import ProxypayException
 from proxypay.models import Reference
 
@@ -16,7 +16,7 @@ from django.utils.timezone import now
 
 # ==========================================================================================================
  
-def create( amount, fields={}, days=None ):
+def create(amount, fields={}, days=None):
 
     """
     Request to proxypay to create a reference and
@@ -32,12 +32,9 @@ def create( amount, fields={}, days=None ):
         ## Custom Fields
         #
 
-        if len(fields) > 9:
+        if len(fields) > 10:
             # 
-            raise ProxypayException('Error creating reference, <fields> Add 9 max custom fields')
-
-        # add reference_id for auto payment purpose
-        fields[PP_AUTO_PAYMENT_REF_ID] = str(reference_id)
+            raise ProxypayException('Error creating reference, <fields> Add 10 max custom fields')
         
         # reference data
         data         = { 'amount': amount, 'custom_fields': fields }
@@ -62,22 +59,19 @@ def create( amount, fields={}, days=None ):
             raise ProxypayException('Error creating reference, <days> must be an integer')
         
         # trying to create the reference
-        ok = api.create_or_update_reference(
-            reference_id,
-            data
-        )
-
+        ok = api.create_or_update_reference(reference_id, data)
+        #
         if ok:
             # saving to the database
             reference = Reference.objects.create(
                 reference=reference_id,
                 amount=amount,
                 entity=api.entity,
-                custom_fields_text=json.dumps(fields),
+                fields=fields,
                 # By default, proxypay references expire at the end of each day
                 expires_in=end_datetime.replace(hour=23,minute=59,second=59) if end_datetime else None
             )
-
+            #
             return reference
     #
     return False

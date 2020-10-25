@@ -1,1 +1,1 @@
-from proxypay.signals.dispatching import reference_paid, reference_created
+from .dispatching import reference_paid, reference_created

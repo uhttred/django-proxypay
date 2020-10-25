@@ -17,6 +17,7 @@ class ProxypayAPI:
     __headers  = {}     # default api headers
     __url      = ''     # base api url
     __entity   = None   # 
+    env        = None
 
     def __init__(self):
 
@@ -34,6 +35,8 @@ class ProxypayAPI:
         self.__url    = configs.get('url')
         # entity
         self.__entity = configs.get('entity')
+        # envi
+        self.env = configs.get('environment')
 
     # ==========================================================
 

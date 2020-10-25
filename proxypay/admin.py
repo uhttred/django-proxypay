@@ -3,40 +3,38 @@ from proxypay.models import Reference
 from django.utils.translation import ugettext_lazy as _
 
 class ReferenceAdmin(admin.ModelAdmin):
+
+    # --------------------------------------------------------------------------------------------
+	###
+	## Settings Properties
+	#
     
     list_display = ( 
         'reference',
-        'entity', 
         'amount', 
-        'paid', 
-        'payment_tarminal',
+        'entity', 
         'payment_local',
-        'expired',
-        'expires_in',
-        'created_at',
-        'updated_at'
-    )
-
-    search_fields = (
-        'reference',
-        'amount',
-    )
-
-    ordering = (
+        'payment_tarminal',
         'created_at',
         'updated_at',
-        'amount',
+        'expires_in',
+        'expired',
+        'is_paid', 
     )
+
+    ordering         = ('-created_at', 'updated_at', 'amount')
+    search_fields    = ('reference', 'amount')
+    list_filter      = ('is_paid', 'entity')
+
+    date_hierarchy   = 'created_at'
+
 
     ###
     ## 
     #
 
-    def paid(self, obj):
-        return _('Yes') if obj.payment else _('No')
-
     def expired(self, obj):
-        return _('Yes') if obj.expired else _('No')
+        return obj.expired
 
     def payment_local(self, obj):
         if obj.payment:
@@ -48,7 +46,7 @@ class ReferenceAdmin(admin.ModelAdmin):
             return obj.payment.get('terminal_type')
         return None
             
-    paid.short_description = _('Paid')
+    expired.boolean = True
     payment_local.short_description = _('Paid In')
     payment_tarminal.short_description = _('Paid With')
 
