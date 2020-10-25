@@ -2,9 +2,6 @@
 ##  Django Proxypay Reference Model
 #
 
-# python stuff
-import json
-
 # django stuff
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -22,9 +19,7 @@ from proxypay.signals import reference_paid, reference_created
 #
 
 PAYMENT_STATUS_PAID = 'paid'
-PAYMENT_STATUS_EXPIRED = 'expired'
 PAYMENT_STATUS_WAIT = 'wait'
-PAYMENT_STATUS_CANCELED = 'canceled'
 
 # ==========================================================================================================
 
@@ -55,15 +50,17 @@ class Reference(models.Model):
     reference           = models.IntegerField(verbose_name=_('Reference'), unique=True, editable=False)
     amount              = models.DecimalField(verbose_name=_('Amount'), max_digits=12, decimal_places=2, editable=False)
     entity              = models.CharField(verbose_name=_('Entity'), max_length=100, null=True, default=None, editable=False)
-    custom_fields_text  = models.TextField(default='', editable=False)
+    fields              = models.JSONField(default=dict)
     # reference payment status: canceled, paid, expired, wait
     payment_status      = models.CharField(max_length=10, default=PAYMENT_STATUS_WAIT, editable=False)
-    payment_data_text   = models.TextField(default=None, null=True, editable=False)
+    payment             = models.JSONField(default=None, null=True)
 
+    is_paid    = models.BooleanField(default=False)
     # date
     expires_in = models.DateTimeField(null=True, default=None)
     created_at = models.DateTimeField(verbose_name=_('Created At'), auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name=_('Update At'), auto_now=True)
+
 
     ###
     ##  Manager
@@ -99,8 +96,9 @@ class Reference(models.Model):
         """
         
         # passando os dados de pagamento na instancia
-        self.payment_data_text = json.dumps(payment_data)
-        self.payment_status    = PAYMENT_STATUS_PAID
+        self.payment        = payment_data
+        self.payment_status = PAYMENT_STATUS_PAID
+        self.is_paid        = True
         self.save()
         #
         self.__dispatch_paid_signal()
@@ -129,16 +127,6 @@ class Reference(models.Model):
     ###
     ## Property Methods
     #
-
-    @property
-    def fields(self):
-        return json.loads(self.custom_fields_text)
-
-    # useful to check if payment was processed
-
-    @property
-    def payment(self):
-        return False if not self.payment_data_text else json.loads(self.payment_data_text)
 
     # expired status
 

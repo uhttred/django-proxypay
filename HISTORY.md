@@ -3,7 +3,11 @@ HISTORY
 
 > Insert new release notes below this line
 
-* Acknowledge payment after mock payment
+## 1.1.0 ( 25, Oct, 2020 )
+
+* add is_paid field on Model Reference 
+* Upgrade django dependenci to version 3
+* Added JSONField on Reference Model to payment and fields (proxypay custom fields)
 
 ## 1.0.2 ( 21, May, 2020 )
 

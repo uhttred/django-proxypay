@@ -49,8 +49,6 @@ class Command(BaseCommand):
                     reference.paid(payment)
                     # 
                     self.stdout.write(self.style.SUCCESS(f"Reference: <{reference.reference}>, paid successfully"))
-                    # acknowledge payment
-                    api.acknowledge_payment(payment.get('id'))
                 else:
                     self.stdout.write(self.style.ERROR(f"Error recognizing payment"))
             else:
