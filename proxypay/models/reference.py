@@ -10,6 +10,7 @@ from dateutil import parser
 
 # proxypay stuff
 from proxypay.api import api
+from proxypay.references.utils import get_validated_data
 from proxypay.exceptions import ProxypayException
 from proxypay.signals import reference_paid, reference_created
 
@@ -134,7 +135,20 @@ class Reference(models.Model):
             return payment
         # returning the payment data already registered
         return self.payment
+    
+    # update if expired
 
+    def update(self):
+        if self.expired:
+            data        = get_validated_data(float(self.amount), self.fields)
+            datetime    = data.pop('datetime')
+            # updating
+            if api.create_or_update_reference(self.reference, data=data):
+                self.expires_in = datetime.replace(hour=23,minute=59,second=59)
+                self.save()
+                return True
+        return False
+            
     ###
     ## Property Methods
     #

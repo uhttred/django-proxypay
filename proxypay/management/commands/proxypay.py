@@ -35,21 +35,19 @@ class Command(BaseCommand):
             # get Reference model instance
             reference = Reference.objects.get(reference=reference_id)
             # paying
-            response = api.post('/payments', data={
+            r = api.post('/payments', data={
                 'amount': float(reference.amount),
                 'reference_id': reference.reference
             })
-            # response status
-            if response.status_code == 200:
-                # reconhecendo o pagamento
-                payment = api.check_reference_payment(reference.reference)
-                # check
-                if payment:
-                    # paid successfully
-                    reference.paid(payment)
-                    # 
-                    self.stdout.write(self.style.SUCCESS(f"Reference: <{reference.reference}>, paid successfully"))
-                else:
-                    self.stdout.write(self.style.ERROR(f"Error recognizing payment"))
+            # r status
+            if r.status_code == 200:
+                # paid successfully
+                payment = r.json()
+                #
+                reference.paid(payment)
+                # 
+                self.stdout.write(self.style.SUCCESS(f"Reference: <{reference.reference}>, paid successfully"))
+                #
+                api.acknowledge_payment(payment.get('id'))
             else:
-                self.stdout.write(self.style.ERROR(f"Proxypay returns {response.status_code} status code from API"))
+                self.stdout.write(self.style.ERROR(f"Proxypay returns {r.status_code} status code from API"))

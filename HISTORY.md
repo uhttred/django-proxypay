@@ -3,6 +3,11 @@ HISTORY
 
 > Insert new release notes below this line
 
+## 1.1.2 ( 26, Oct, 2020 )
+
+* Updating expired reference from reference instance
+* Best acknowledge payment on mock payment
+
 ## 1.1.1 ( 26, Oct, 2020 )
 
 * added paid_at field on Model Reference 
