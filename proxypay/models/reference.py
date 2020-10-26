@@ -6,6 +6,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
+from dateutil import parser
 
 # proxypay stuff
 from proxypay.api import api
@@ -56,6 +57,7 @@ class Reference(models.Model):
     payment             = models.JSONField(default=None, null=True)
 
     is_paid    = models.BooleanField(default=False)
+    paid_at    = models.DateTimeField(default=None, null=True)
     # date
     expires_in = models.DateTimeField(null=True, default=None)
     created_at = models.DateTimeField(verbose_name=_('Created At'), auto_now_add=True)
@@ -94,14 +96,23 @@ class Reference(models.Model):
         Update reference payment status to paid
         Suitable for use with Proxypay's Webhook
         """
-        
-        # passando os dados de pagamento na instancia
-        self.payment        = payment_data
-        self.payment_status = PAYMENT_STATUS_PAID
-        self.is_paid        = True
-        self.save()
-        #
-        self.__dispatch_paid_signal()
+
+        if not self.payment:
+            
+            # passando os dados de pagamento na instancia
+            self.payment        = payment_data
+            self.payment_status = PAYMENT_STATUS_PAID
+            self.is_paid        = True
+
+            try:
+                self.paid_at = parser.isoparse(self.payment.get('datetime'))
+            except:
+                self.paid_at = now()
+                
+            self.save()
+
+            #
+            self.__dispatch_paid_signal()
 
     # Check if a reference was paid
 

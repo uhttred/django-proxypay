@@ -3,9 +3,13 @@ HISTORY
 
 > Insert new release notes below this line
 
+## 1.1.1 ( 26, Oct, 2020 )
+
+* added paid_at field on Model Reference 
+
 ## 1.1.0 ( 25, Oct, 2020 )
 
-* add is_paid field on Model Reference 
+* added is_paid field on Model Reference 
 * Upgrade django dependenci to version 3
 * Added JSONField on Reference Model to payment and fields (proxypay custom fields)
 

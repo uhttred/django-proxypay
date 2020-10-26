@@ -15,6 +15,7 @@ class ReferenceAdmin(admin.ModelAdmin):
         'entity', 
         'payment_local',
         'payment_tarminal',
+        'paid_at',
         'created_at',
         'updated_at',
         'expires_in',
