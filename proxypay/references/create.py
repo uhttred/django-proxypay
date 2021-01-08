@@ -18,20 +18,21 @@ def create(amount, fields={}, days=None):
     returns an instance of proxypay.models.Reference
     """
 
-    # get Generated reference id from proxypay
-    reference_id = api.get_reference_id()
+    tryTimes = 3
 
-    if reference_id:
-        
-        data        = get_validated_data( amount, fields, days )
+    while tryTimes > 0:
+        tryTimes -= 1
+        # Get Generated reference id from proxypay
+        referenceId = api.get_reference_id()
+        if not Reference.objects.is_available(referenceId):
+            continue
+        data        = get_validated_data(amount, fields, days)
         datetime    = data.pop('datetime')
         # trying to create the reference
-        ok = api.create_or_update_reference(reference_id,data)
-        #
-        if ok:
+        if api.create_or_update_reference(referenceId, data):
             # saving to the database
             return Reference.objects.create(
-                reference=reference_id,
+                reference=referenceId,
                 amount=amount,
                 entity=api.entity,
                 fields=fields,

@@ -7,6 +7,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from dateutil import parser
+from django.db.models.constraints import UniqueConstraint
 
 # proxypay stuff
 from proxypay.api import api
@@ -20,14 +21,25 @@ from proxypay.signals import reference_paid, reference_created
 ## Paymentt Status
 #
 
-PAYMENT_STATUS_PAID = 'paid'
-PAYMENT_STATUS_WAIT = 'wait'
+PAYMENT_STATUS_WAITING = 0
+PAYMENT_STATUS_PAID = 1
+PAYMENT_STATUS_CHOICES = (
+    (PAYMENT_STATUS_WAITING , 'Waiting'),
+    (PAYMENT_STATUS_PAID , 'Paid')
+)
 
 # ==========================================================================================================
 
 """Proxypay References Model Manager"""
 
 class ReferenceModelManager(models.Manager):
+
+    def is_available(self, reference):
+        return not self.filter(
+            reference=reference,
+            status=PAYMENT_STATUS_WAITING,
+            expires_in__gt=now()
+        ).exists() if reference else False
 
     def create(self, **kwargs):
         # creating the signal
@@ -49,12 +61,12 @@ class Reference(models.Model):
     #
 
     # reference id
-    reference           = models.IntegerField(verbose_name=_('Reference'), unique=True, editable=False)
+    reference           = models.IntegerField(verbose_name=_('Reference'), editable=False)
     amount              = models.DecimalField(verbose_name=_('Amount'), max_digits=12, decimal_places=2, editable=False)
     entity              = models.CharField(verbose_name=_('Entity'), max_length=100, null=True, default=None, editable=False)
     fields              = models.JSONField(default=dict)
-    # reference payment status: canceled, paid, expired, wait
-    payment_status      = models.CharField(max_length=10, default=PAYMENT_STATUS_WAIT, editable=False)
+    # reference payment status: paid, expired, waiting
+    status              = models.CharField(max_length=10, default=PAYMENT_STATUS_WAITING, editable=False)
     payment             = models.JSONField(default=None, null=True)
 
     is_paid    = models.BooleanField(default=False)
@@ -71,11 +83,10 @@ class Reference(models.Model):
 
     objects = ReferenceModelManager()
 
+    # --------------------------------------------------------------------------------------------
     ###
     ##  Methods
     #
-
-    # cancel reference on proxypay and delete instance
 
     def delete(self):
 
@@ -89,8 +100,6 @@ class Reference(models.Model):
 
         raise ProxypayException('Error when trying to delete the reference in the Proxypay')
 
-    # update reference payment status to paid
-
     def paid(self, payment_data):
 
         """
@@ -101,9 +110,9 @@ class Reference(models.Model):
         if not self.payment:
             
             # passando os dados de pagamento na instancia
-            self.payment        = payment_data
-            self.payment_status = PAYMENT_STATUS_PAID
-            self.is_paid        = True
+            self.payment = payment_data
+            self.status = PAYMENT_STATUS_PAID
+            self.is_paid = True
 
             try:
                 self.paid_at = parser.isoparse(self.payment.get('datetime'))
@@ -111,11 +120,8 @@ class Reference(models.Model):
                 self.paid_at = now()
                 
             self.save()
-
-            #
             self.__dispatch_paid_signal()
 
-    # Check if a reference was paid
 
     def check_payment(self):
 
@@ -136,7 +142,6 @@ class Reference(models.Model):
         # returning the payment data already registered
         return self.payment
     
-    # update if expired
 
     def update(self):
         if self.expired:
@@ -149,11 +154,10 @@ class Reference(models.Model):
                 return True
         return False
             
+    # --------------------------------------------------------------------------------------------
     ###
-    ## Property Methods
+    ##  Property Methods
     #
-
-    # expired status
 
     @property
     def expired(self):
@@ -161,8 +165,9 @@ class Reference(models.Model):
             return self.expires_in < now()
         return False
 
+    # --------------------------------------------------------------------------------------------
     ###
-    ## Classe Method
+    ##  Class Methods
     #
 
     def __str__(self):
@@ -171,8 +176,9 @@ class Reference(models.Model):
     def __repr__(self):
         return f"Proxypay Reference: {self.reference}"
 
+    # --------------------------------------------------------------------------------------------
     ###
-    ## Some Utils
+    ##  Signals
     #
 
     def __dispatch_paid_signal(self):

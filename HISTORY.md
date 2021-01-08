@@ -3,6 +3,10 @@ HISTORY
 
 > Insert new release notes below this line
 
+## 1.2.0 ( 8, Fev, 2021 )
+
+* Checking the status (unpaid, not expired) of the reference before creating
+
 ## 1.1.2 ( 26, Oct, 2020 )
 
 * Updating expired reference from reference instance

@@ -7,7 +7,7 @@ from proxypay.models import Reference
 
 # ==========================================================================================================
  
-def get( reference_id ):
+def get (reference_id):
 
     """
     Get a payment reference instance from proxypay.models.Reference

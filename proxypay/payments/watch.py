@@ -33,7 +33,7 @@ def check_signature(signature, raw_http_body):
 # ==============================================================================================
 
 @csrf_exempt
-def watch_payments(request):
+def watch_payments (request):
 
     """View to watch Proxyapy API Webhook"""
 
