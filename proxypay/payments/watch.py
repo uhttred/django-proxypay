@@ -45,9 +45,11 @@ def watch_payments (request):
             # payment data
             payment = json.loads(request.body)
             # getting reference id
-            reference = get(
-                payment.get('custom_fields', {}).get(PP_AUTO_PAYMENT_REF_ID) or payment.get('reference_id')
-            )
+            reference_id = payment.get('custom_fields', {}).get(PP_AUTO_PAYMENT_REF_ID)
+            print(payment)
+            print(reference_id)
+            print(payment.get('reference_id'))
+            reference = get(reference_id)
             # chack reference
             if reference:
                 # update as paid

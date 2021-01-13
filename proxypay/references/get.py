@@ -14,10 +14,4 @@ def get (reference_id):
     Returns false if the passed id reference is not found
     """
 
-    try:
-        ref = Reference.objects.get(
-            reference=reference_id
-        )
-        return ref
-    except:
-        return False
+    return Reference.objects.get_reference(reference=reference_id)

@@ -41,6 +41,13 @@ class ReferenceModelManager(models.Manager):
             expires_in__gt=now()
         ).exists() if reference else False
 
+    def get_reference(self, reference):
+        return self.filter(
+            reference=reference,
+            status=PAYMENT_STATUS_WAITING,
+            expires_in__gt=now()
+        ).first()
+
     def create(self, **kwargs):
         # creating the signal
         reference = super(ReferenceModelManager, self).create(**kwargs)
