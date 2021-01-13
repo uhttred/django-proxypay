@@ -8,6 +8,7 @@
 from proxypay.api import api
 from proxypay.models import Reference
 from proxypay.references.utils import get_validated_data
+from proxypay.conf import PP_AUTO_PAYMENT_REF_ID
 
 # ==========================================================================================================
  
@@ -26,7 +27,9 @@ def create(amount, fields={}, days=None):
         referenceId = api.get_reference_id()
         if not Reference.objects.is_available(referenceId):
             continue
+        #
         data        = get_validated_data(amount, fields, days)
+        data['custom_fields'][PP_AUTO_PAYMENT_REF_ID] = str(referenceId)
         datetime    = data.pop('datetime')
         # trying to create the reference
         if api.create_or_update_reference(referenceId, data):
@@ -39,4 +42,6 @@ def create(amount, fields={}, days=None):
                 # By default, proxypay references expire at the end of each day
                 expires_in=datetime.replace(hour=23,minute=59,second=59)
             )
+        else:
+            break
     return False

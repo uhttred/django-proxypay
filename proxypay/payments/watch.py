@@ -4,6 +4,7 @@
 
 # pyhton stuffs
 import hmac, hashlib, json
+from proxypay.models import reference
 
 # django stuff
 from django.http import HttpResponse
@@ -12,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 # proxypay stuffs
 from proxypay.references import get
 from proxypay.conf import get_private_key
+from proxypay.conf import PP_AUTO_PAYMENT_REF_ID
 
 # ==============================================================================================
 
@@ -42,8 +44,10 @@ def watch_payments (request):
         if check_signature(request.headers.get('X-Signature'), request.body):
             # payment data
             payment = json.loads(request.body)
-            # gettings the referenc by reference id
-            reference = get(payment.get('reference_id'))
+            # getting reference id
+            reference = get(
+                payment.get('custom_fields', {}).get(PP_AUTO_PAYMENT_REF_ID) or payment.get('reference_id')
+            )
             # chack reference
             if reference:
                 # update as paid

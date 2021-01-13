@@ -15,9 +15,9 @@ def get_validated_data(amount, fields={}, days=None):
     ## Custom Fields
     #
 
-    if len(fields) > 10:
+    if len(fields) > 9:
         # 
-        raise ProxypayException('Error creating reference, <fields> Add 10 max custom fields')
+        raise ProxypayException('Error creating reference, <fields> Add 9 max custom fields')
     
     # reference data
     data         = { 'amount': amount, 'custom_fields': fields }
