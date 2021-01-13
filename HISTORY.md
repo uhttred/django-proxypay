@@ -3,6 +3,10 @@ HISTORY
 
 > Insert new release notes below this line
 
+## 1.2.1 ( 13, Fev, 2021 )
+
+* watch payment, get reference id from custom fields
+
 ## 1.2.0 ( 8, Fev, 2021 )
 
 * Checking the status (unpaid, not expired) of the reference before creating
