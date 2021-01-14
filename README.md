@@ -54,6 +54,10 @@ PROXYPAY = {
     'ENTITY': os.environ.get('PROXYPAY_ENTITY'),
     # (int) Optional, Default days to expire a reference
     'REFERENCE_DAYS': os.environ.get('PROXYPAY_REFERENCE_DAYS'),
+    # (bool) default: False
+    # If True, proxypay.payments.watch will return status 200
+    # if a payment confirmation is sent whose reference has not been registered
+    'ACCEPT_UNRECOGNIZED_PAYMENT': os.environ.get('ACCEPT_UNRECOGNIZED_PAYMENT'),
     # (str) Optional, the proxypay api environment to use
     # If not set, by default Proxypay will use the sandbox environment if settings.DEBUG is True 
     # and produnction if is False

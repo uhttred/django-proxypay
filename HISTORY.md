@@ -3,6 +3,9 @@ HISTORY
 
 > Insert new release notes below this line
 
+## 1.2.5 ( 14, Fev, 2021 )
+
+* watch payment, confirmation from key uuid
 ## 1.2.1 ( 13, Fev, 2021 )
 
 * watch payment, get reference id from custom fields
