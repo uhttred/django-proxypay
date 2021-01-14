@@ -68,6 +68,7 @@ class Reference(models.Model):
     #
 
     # reference id
+    key                 = models.CharField(max_length=125, unique=True, editable=False, null=True, default=None)
     reference           = models.IntegerField(verbose_name=_('Reference'), editable=False)
     amount              = models.DecimalField(verbose_name=_('Amount'), max_digits=12, decimal_places=2, editable=False)
     entity              = models.CharField(verbose_name=_('Entity'), max_length=100, null=True, default=None, editable=False)

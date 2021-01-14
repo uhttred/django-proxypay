@@ -4,7 +4,6 @@
 
 # pyhton stuffs
 import hmac, hashlib, json
-from proxypay.models import reference
 
 # django stuff
 from django.http import HttpResponse
@@ -12,8 +11,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 # proxypay stuffs
 from proxypay.references import get
-from proxypay.conf import get_private_key
-from proxypay.conf import PP_AUTO_PAYMENT_REF_ID
+from proxypay.conf import get_private_key, get_accept_unrecognized_payment
+from proxypay.conf import PP_UUID_REF_KEY
 
 # ==============================================================================================
 
@@ -43,22 +42,24 @@ def watch_payments (request):
         # check signature
         if check_signature(request.headers.get('X-Signature'), request.body):
             # payment data
-            payment = json.loads(request.body)
+            payment     = json.loads(request.body)
+            confirmed   = False
             # getting reference id
-            reference_id = payment.get('custom_fields', {}).get(PP_AUTO_PAYMENT_REF_ID)
-            if not reference_id:
-                print('No FROM DJPP_ID')
-                reference_id = payment.get('reference_id')
+            key = payment.get('custom_fields', {}).get(PP_UUID_REF_KEY)
             print(payment)
-            print(reference_id)
+            print(key)
             print(payment.get('reference_id'))
-            reference = get(reference_id)
+            #
+            reference = get(key, payment.get('reference_id'))
             print(reference)
             # chack reference
             if reference:
-                # update as paid
                 reference.paid(payment)
-                # paiment done
+                confirmed = True
+            else:
+                confirmed = get_accept_unrecognized_payment()
+            #
+            if confirmed:
                 return HttpResponse(status=200)
             # reference not found
             return HttpResponse(status=404)

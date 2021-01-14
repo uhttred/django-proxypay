@@ -2,4 +2,4 @@
 default_app_config = 'proxypay.apps.ProxypayConfig'
 
 # app version
-__version__ = "1.2.3"
+__version__ = "1.2.4"

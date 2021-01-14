@@ -2,13 +2,14 @@
 ##  Django Proxypay Payment Reference Creation
 #
 
-
+import uuid
 
 # proxypay stuffs
 from proxypay.api import api
 from proxypay.models import Reference
 from proxypay.references.utils import get_validated_data
-from proxypay.conf import PP_AUTO_PAYMENT_REF_ID
+from proxypay.conf import PP_UUID_REF_KEY
+
 
 # ==========================================================================================================
  
@@ -28,13 +29,15 @@ def create(amount, fields={}, days=None):
         if not Reference.objects.is_available(referenceId):
             continue
         #
+        djpp_id     = uuid.uuid4().hex
         data        = get_validated_data(amount, fields, days)
-        data['custom_fields'][PP_AUTO_PAYMENT_REF_ID] = str(referenceId)
+        data['custom_fields'][PP_UUID_REF_KEY] = djpp_id
         datetime    = data.pop('datetime')
         # trying to create the reference
         if api.create_or_update_reference(referenceId, data):
             # saving to the database
             return Reference.objects.create(
+                key=djpp_id,
                 reference=referenceId,
                 amount=amount,
                 entity=api.entity,
