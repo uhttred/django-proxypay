@@ -26,6 +26,10 @@ Simple **django-proxypay** can be installed with ``pip``:
 
     pip install django-proxypay
 
+Or from this repository:
+
+    pip install -e git+https://github.com/txiocoder/django-proxypay.git@master#egg=django-proxypay
+
 #### Requirements
 
 * Python ``3.7; 3.8``

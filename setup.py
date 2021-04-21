@@ -16,13 +16,13 @@ setuptools.setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     author="Ageu Matheus",
-    author_email="ageumatheus1@gmail.com",
+    author_email="txiocoder@gmail.com",
     maintainer="Ageu Matheus",
-    maintainer_email="ageumatheus1@gmail.com",
-    url="https://github.com/AgeuMatheus/django-proxypay",
+    maintainer_email="txiocoder@gmail.com",
+    url="https://github.com/txiocoder/django-proxypay",
     project_urls={
         "Changelog": (
-            "https://github.com/AgeuMatheus/django-proxypay"
+            "https://github.com/txiocoder/django-proxypay"
             + "/blob/master/HISTORY.md"
         )
     },
@@ -31,7 +31,8 @@ setuptools.setup(
     keywords=["django", "payments", "proxypay", "django-proxypay" ],
     install_requires=[
         "Django>=3",
-        "requests>=2"
+        "requests>=2",
+        "python-dateutil"
     ],
     python_requires=">=3.6",
     classifiers=[

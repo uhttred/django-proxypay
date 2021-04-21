@@ -2,9 +2,6 @@
 ##  Django Proxypay Get Reference
 #
 
-# proxypay stuffs
-from proxypay.models import Reference
-
 # ==========================================================================================================
  
 def get (key, reference_id=False):
@@ -13,6 +10,8 @@ def get (key, reference_id=False):
     Get a payment reference instance from proxypay.models.Reference
     Returns false if the passed id reference is not found
     """
+
+    from proxypay.models import Reference
 
     try:
         return Reference.objects.get(key=key)

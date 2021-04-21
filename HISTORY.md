@@ -3,6 +3,8 @@ HISTORY
 
 > Insert new release notes below this line
 
+* fixed circular import
+
 ## 1.2.5 ( 14, Fev, 2021 )
 
 * watch payment, confirmation from key uuid

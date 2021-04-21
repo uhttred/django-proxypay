@@ -6,7 +6,6 @@ import uuid
 
 # proxypay stuffs
 from proxypay.api import api
-from proxypay.models import Reference
 from proxypay.references.utils import get_validated_data
 from proxypay.conf import PP_UUID_REF_KEY
 
@@ -19,7 +18,7 @@ def create(amount, fields={}, days=None):
     Request to proxypay to create a reference and
     returns an instance of proxypay.models.Reference
     """
-
+    from proxypay.models import Reference
     tryTimes = 3
 
     while tryTimes > 0:
