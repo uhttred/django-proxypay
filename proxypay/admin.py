@@ -25,7 +25,7 @@ class ReferenceAdmin(admin.ModelAdmin):
 
     ordering         = ('-created_at', 'updated_at', 'amount')
     search_fields    = ('reference', 'amount')
-    list_filter      = ('is_paid', 'entity')
+    list_filter      = ('status', 'entity')
 
     date_hierarchy   = 'created_at'
 

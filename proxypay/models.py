@@ -4,7 +4,11 @@ from django.utils.timezone import now
 from dateutil import parser
 
 from .api import api
-from .utils import get_validated_data_for_reference_creation
+from .configs import conf
+from .utils import (
+    get_validated_data_for_reference_creation,
+    get_calculated_fees
+)
 from .exceptions import ProxypayException
 from .signals import reference_paid, reference_created
 
@@ -38,8 +42,21 @@ class ReferenceModelManager(models.Manager):
         ).first()
 
     def create(self, **kwargs):
-        # creating the signal
-        reference = super(ReferenceModelManager, self).create(**kwargs)
+        # creating the signal and add additional data
+        data = kwargs.pop('data', {})
+        data['proxypay_fee'] = get_calculated_fees(kwargs['amount'],(
+            conf.PROXYPAY_FEE.get('percent', 0),
+            conf.PROXYPAY_FEE.get('min_amount'),
+            conf.PROXYPAY_FEE.get('max_amount'),
+        ))
+        data['bank_fee'] = get_calculated_fees(kwargs['amount'],(
+            conf.BANK_FEE.get('percent', 0),
+            conf.BANK_FEE.get('min_amount'),
+            conf.BANK_FEE.get('max_amount'),
+        ))
+        if data['bank_fee']:
+            data['bank_fee']['name'] = conf.BANK_FEE.get('name')
+        reference = super(ReferenceModelManager, self).create(data=data, **kwargs)
         # Dispatching Signal
         reference_created.send(
             reference.__class__, 

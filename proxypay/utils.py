@@ -43,16 +43,34 @@ def check_api_signature(signature, raw_http_body_msg, token=None):
 
 # ==============================================================================================
 
-def calculate_transaction_fees(amount, fees: tuple):
+def get_calculated_fees(amount, fees: tuple, return_as_dict: bool = True):
+    """
+    Calculates the fees for an amount.
+    fees must be a tuple containing the following values in the following order:
+    The percentage rate, minimum amount to be withdrawn, maximum amount. like:
+    (13, 100, 100) or
+    (0.25, None, None)
+    """
 
     percent, min_amount, max_amount = fees
     if percent:
-        fees_amount = amount * (percent / 100)
-        if min_amount and fees_amount < min_amount:
+        fee_amount = amount * (percent / 100)
+        if min_amount and fee_amount < min_amount:
             expense = min_amount
-        elif max_amount and fees_amount > max_amount:
+        elif max_amount and fee_amount > max_amount:
             expense = max_amount
         else:
-            expense = fees_amount
-        return amount, amount - expense, expense, fees_amount
-    return amount, 0, 0, 0
+            expense = fee_amount
+        
+        if return_as_dict:
+            return {
+                'amount': amount,
+                'net_amount': amount - expense,
+                'expense': expense,
+                'fee_amount': fee_amount,
+                'applied_fee': percent,
+                'applied_min_amount': min_amount,
+                'applied_max_amount': max_amount
+            }
+        return amount, amount - expense, expense, fee_amount
+    return None
