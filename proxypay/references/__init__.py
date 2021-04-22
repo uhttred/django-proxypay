@@ -1,2 +1,2 @@
-from proxypay.references.create import create, get_validated_data
+from proxypay.references.create import create
 from proxypay.references.get import get

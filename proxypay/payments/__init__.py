@@ -1,1 +1,0 @@
-from proxypay.payments.watch import watch_payments

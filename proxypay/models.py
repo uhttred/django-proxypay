@@ -1,18 +1,12 @@
-###
-##  Django Proxypay Reference Model
-#
-
-# django stuff
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from dateutil import parser
 
-# proxypay stuff
-from proxypay.api import api
-from proxypay.references.utils import get_validated_data
-from proxypay.exceptions import ProxypayException
-from proxypay.signals import reference_paid, reference_created
+from .api import api
+from .utils import get_validated_data_for_reference_creation
+from .exceptions import ProxypayException
+from .signals import reference_paid, reference_created
 
 # ==========================================================================================================
 
@@ -22,10 +16,6 @@ from proxypay.signals import reference_paid, reference_created
 
 PAYMENT_STATUS_WAITING = 0
 PAYMENT_STATUS_PAID = 1
-PAYMENT_STATUS_CHOICES = (
-    (PAYMENT_STATUS_WAITING , 'Waiting'),
-    (PAYMENT_STATUS_PAID , 'Paid')
-)
 
 # ==========================================================================================================
 
@@ -55,34 +45,39 @@ class ReferenceModelManager(models.Manager):
             reference.__class__, 
             reference=reference
         )
-        #
         return reference
 
 """Proxypay References Model"""
 
 class Reference(models.Model):
-
-    ###
-    ## Model Attributes
-    #
+    
+    class Meta:
+        verbose_name = _('Reference')
+        verbose_name_plural = _('Referencecs')
+    
+    class Status(models.IntegerChoices):
+        WAITING = PAYMENT_STATUS_WAITING, _('Waitng')
+        PAID = PAYMENT_STATUS_PAID, _('Paid')
 
     # reference id
-    key                 = models.CharField(max_length=125, unique=True, editable=False, null=True, default=None)
-    reference           = models.IntegerField(verbose_name=_('Reference'), editable=False)
-    amount              = models.DecimalField(verbose_name=_('Amount'), max_digits=12, decimal_places=2, editable=False)
-    entity              = models.CharField(verbose_name=_('Entity'), max_length=100, null=True, default=None, editable=False)
-    fields              = models.JSONField(default=dict)
+    key                 = models.CharField(_('unique key'), max_length=125, unique=True, editable=False, null=True, default=None)
+    reference           = models.CharField(_('reference'), editable=False, max_length=100)
+    amount              = models.DecimalField(_('amount'), max_digits=12, decimal_places=2, editable=False)
+    entity              = models.CharField(_('entity'), max_length=100, null=True, default=None, editable=False)
+    
     # reference payment status: paid, expired, waiting
-    status              = models.CharField(max_length=10, default=PAYMENT_STATUS_WAITING, editable=False)
-    payment             = models.JSONField(default=None, null=True)
+    status              = models.IntegerField(_('status'), default=Status.WAITING, choices=Status.choices, editable=False)
 
-    is_paid    = models.BooleanField(default=False)
-    paid_at    = models.DateTimeField(default=None, null=True)
+    # data fields
+    fields              = models.JSONField(default=dict) # fileds in proxypay api data reference
+    payment             = models.JSONField(default=None, null=True) # payment data form proxypay
+    data                = models.JSONField(default=dict) # addtional data
+
     # date
-    expires_in = models.DateTimeField(null=True, default=None)
-    created_at = models.DateTimeField(verbose_name=_('Created At'), auto_now_add=True)
-    updated_at = models.DateTimeField(verbose_name=_('Update At'), auto_now=True)
-
+    paid_at    = models.DateTimeField(_('paid at'), default=None, null=True)
+    expires_in = models.DateTimeField(_('expires in'), null=True, default=None)
+    created_at = models.DateTimeField(_('created at'), auto_now_add=True)
+    updated_at = models.DateTimeField(_('update at'), auto_now=True)
 
     ###
     ##  Manager
@@ -90,77 +85,6 @@ class Reference(models.Model):
 
     objects = ReferenceModelManager()
 
-    # --------------------------------------------------------------------------------------------
-    ###
-    ##  Methods
-    #
-
-    def delete(self):
-
-        """Delete payment reference from Proxypay and Database"""
-
-        # deleting from proxypay
-        deleted = api.delete_reference(self.reference)
-        # 
-        if deleted:
-            return super(Reference, self).delete()
-
-        raise ProxypayException('Error when trying to delete the reference in the Proxypay')
-
-    def paid(self, payment_data):
-
-        """
-        Update reference payment status to paid
-        Suitable for use with Proxypay's Webhook
-        """
-
-        if not self.payment:
-            
-            # passando os dados de pagamento na instancia
-            self.payment = payment_data
-            self.status = PAYMENT_STATUS_PAID
-            self.is_paid = True
-
-            try:
-                self.paid_at = parser.isoparse(self.payment.get('datetime'))
-            except:
-                self.paid_at = now()
-                
-            self.save()
-            self.__dispatch_paid_signal()
-
-
-    def check_payment(self):
-
-        """
-        Checks whether the referral payment has already been processed.
-        Initially check on the instanse, if it is not processed, check the Proxypay API to be sure. 
-        Returns payment data or false
-        """
-
-        if not self.payment:
-            # check from api
-            payment = api.check_reference_payment(self.reference)
-            # case already paid
-            if payment:
-                self.paid(payment)
-            # returns payment data or false
-            return payment
-        # returning the payment data already registered
-        return self.payment
-    
-
-    def update(self):
-        if self.expired:
-            data        = get_validated_data(float(self.amount), self.fields)
-            datetime    = data.pop('datetime')
-            # updating
-            if api.create_or_update_reference(self.reference, data=data):
-                self.expires_in = datetime.replace(hour=23,minute=59,second=59)
-                self.save()
-                return True
-        return False
-            
     # --------------------------------------------------------------------------------------------
     ###
     ##  Property Methods
@@ -172,16 +96,73 @@ class Reference(models.Model):
             return self.expires_in < now()
         return False
 
+    @property
+    def is_paid(self):
+        return self.status == Reference.Status.PAID
+
+    # --------------------------------------------------------------------------------------------
+    ###
+    ##  Methods
+    #
+
+    def delete(self):
+        """Delete payment reference from Proxypay and Database"""
+        deleted = api.delete_reference(self.reference)
+        if deleted:
+            return super(Reference, self).delete()
+        raise ProxypayException(_('Error when trying to delete the reference in the Proxypay'))
+
+    def paid(self, payment_data):
+        """
+        Update reference payment status to paid
+        Suitable for use with Proxypay's Webhook
+        """
+        if not self.payment:
+            # passando os dados de pagamento na instancia
+            self.payment = payment_data
+            self.status  = Reference.Status.PAID
+            try:
+                self.paid_at = parser.isoparse(self.payment.get('datetime'))
+            except:
+                self.paid_at = now()  
+            self.save()
+            self.__dispatch_paid_signal()
+
+    def check_payment(self):
+        """
+        Checks whether the referral payment has already been processed.
+        Initially check on the instanse, if it is not processed, check the Proxypay API to be sure. 
+        Returns payment data or false
+        """
+        if not self.payment:
+            if (payment := api.check_reference_payment(self.reference)):
+                self.paid(payment)
+                return payment
+            return False
+        return self.payment
+    
+
+    def update(self):
+        if self.expired:
+            data        = get_validated_data_for_reference_creation(float(self.amount), self.fields)
+            datetime    = data.pop('datetime')
+            # updating
+            if api.create_or_update_reference(self.reference, data=data):
+                self.expires_in = datetime.replace(hour=23,minute=59,second=59)
+                self.save()
+                return True
+        return False
+
     # --------------------------------------------------------------------------------------------
     ###
     ##  Class Methods
     #
 
     def __str__(self):
-        return f"Proxypay Reference: {self.reference}"
+        return  _("Proxypay reference: '%s'") % self.reference
 
     def __repr__(self):
-        return f"Proxypay Reference: {self.reference}"
+        return _("Proxypay reference: '%s'") % self.reference
 
     # --------------------------------------------------------------------------------------------
     ###
@@ -189,7 +170,6 @@ class Reference(models.Model):
     #
 
     def __dispatch_paid_signal(self):
-        # Dispatching Signal
         reference_paid.send(
             self.__class__, 
             reference=self

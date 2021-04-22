@@ -1,12 +1,5 @@
-###
-##  Django Proxypay API 
-#
-
-# requests 
 import requests
-
-# proxypay stuff
-from .conf import get_configurations
+from .configs import conf as configuration
 
 # ==========================================================================================================
     
@@ -19,24 +12,18 @@ class ProxypayAPI:
     __entity   = None   # 
     env        = None
 
-    def __init__(self):
+    def __init__(self, config=None):
 
-        # proxypay configuration from project settings
-        configs = get_configurations()
-
+        conf = config or configuration
         # setting the headers
         self.__headers = {
             'Content-Type': 'application/json',
             'Accept': 'application/vnd.proxypay.v2+json',
-            'Authorization': f"Token {configs.get('token')}"
+            'Authorization': f"Token {conf.get_token()}"
         }
-
-        # base url
-        self.__url    = configs.get('url')
-        # entity
-        self.__entity = configs.get('entity')
-        # envi
-        self.env = configs.get('environment')
+        self.__url    = conf.get_url()
+        self.__entity = conf.get_entity()
+        self.env      = conf.get_environment()
 
     # ==========================================================
 
@@ -115,7 +102,6 @@ class ProxypayAPI:
     # check reference payment status
 
     def check_reference_payment(self, reference_id):
-
         """
         Checks if a reference has already been paid, if so, 
         returns the payment data and eliminates the payment data in proxyapy
@@ -139,7 +125,6 @@ class ProxypayAPI:
     # Acknowledges payment
 
     def acknowledge_payment(self, payment_id):
-
         r = self.delete(f"/payments/{payment_id}")
         # response status
         return True if r.status_code == 204 else False
@@ -151,36 +136,27 @@ class ProxypayAPI:
     #   
 
     def get(self, path, params={}):
-
         """ makes a GET request, path parameter must init with / """
-
         with requests.get(f"{self.__url}{path}", params=params, headers=self.__headers,) as r:
             return r
 
     def post(self, path, data={}, params={}):
-
         """ makes a POST request, path parameter must init with / """
-
         with requests.post(f"{self.__url}{path}", json=data, params=params, headers=self.__headers,) as r:
             return r
 
     def put(self, path, data={}, params={}):
-
         """ makes a PUT request, path parameter must init with / """
-
         with requests.put(f"{self.__url}{path}", json=data, params=params, headers=self.__headers,) as r:
             return r
 
     def delete(self, path, data={}, params={}):
-
         """ makes a DELETE request, path parameter must init with / """
-
         with requests.delete(f"{self.__url}{path}", json=data, params=params, headers=self.__headers,) as r:
             return r
     
     # ==========================================================
     
-
 # ==========================================================================================================
 
 api = ProxypayAPI()

@@ -1,23 +1,17 @@
-###
-##  Django Proxypay Payment Reference Creation
-#
-
 import uuid
 
-# proxypay stuffs
 from proxypay.api import api
-from proxypay.references.utils import get_validated_data
-from proxypay.conf import PP_UUID_REF_KEY
+from proxypay.configs import conf
+from proxypay.utils import get_validated_data_for_reference_creation
 
-
-# ==========================================================================================================
+# ==========================================================================
  
-def create(amount, fields={}, days=None):
-
+def create(amount: float, fields: dict = {}, days: int =None):
     """
     Request to proxypay to create a reference and
     returns an instance of proxypay.models.Reference
     """
+
     from proxypay.models import Reference
     tryTimes = 3
 
@@ -27,10 +21,10 @@ def create(amount, fields={}, days=None):
         referenceId = api.get_reference_id()
         if not Reference.objects.is_available(referenceId):
             continue
-        #
+        # reference data
         djpp_id     = uuid.uuid4().hex
-        data        = get_validated_data(amount, fields, days)
-        data['custom_fields'][PP_UUID_REF_KEY] = djpp_id
+        data        = get_validated_data_for_reference_creation(amount, fields, days)
+        data['custom_fields'][conf.REFERENCE_UUID_KEY] = djpp_id
         datetime    = data.pop('datetime')
         # trying to create the reference
         if api.create_or_update_reference(referenceId, data):
@@ -44,6 +38,5 @@ def create(amount, fields={}, days=None):
                 # By default, proxypay references expire at the end of each day
                 expires_in=datetime.replace(hour=23,minute=59,second=59)
             )
-        else:
-            break
+        break
     return False

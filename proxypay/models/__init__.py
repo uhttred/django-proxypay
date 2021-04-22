@@ -1,1 +1,0 @@
-from proxypay.models.reference import Reference

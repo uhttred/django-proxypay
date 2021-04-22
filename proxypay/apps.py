@@ -1,9 +1,8 @@
 from django.apps import AppConfig
 
 class ProxypayConfig(AppConfig):
-    # application name
+    default_auto_field = 'django.db.models.BigAutoField'
     name = 'proxypay'
 
     def ready(self):
-        # importing signal
         from . import signals
