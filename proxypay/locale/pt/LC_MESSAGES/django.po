@@ -3,262 +3,265 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-23 15:24+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2021-04-23 16:43+0100\n"
+"PO-Revision-Date: 2021-04-23 17:45+0100\n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: admin.py:103 models.py:52
 msgid "Reference"
-msgstr ""
+msgstr "Referência"
 
 #: admin.py:104
 msgid "Amount and Fees"
-msgstr ""
+msgstr "Montante e Taxas"
 
 #: admin.py:105
 msgid "Related Product and Service"
-msgstr ""
+msgstr "Produto e Serviço Relacionados"
 
 #: admin.py:106
 msgid "Proxypay Amount and Fee"
-msgstr ""
+msgstr "Montante e Taxa Proxypay"
 
 #: admin.py:107
 msgid "Bank Amount and Fee"
-msgstr ""
+msgstr "Montante e Taxa Banco"
 
 #: admin.py:108
 msgid "Proxypay Payment Details"
-msgstr ""
+msgstr "Detalhes de Pagamento Proxypay"
 
 #: admin.py:109
 msgid "Dates"
-msgstr ""
+msgstr "Datas"
 
 #: admin.py:110
 msgid "Status"
-msgstr ""
+msgstr "Estado"
 
 #: admin.py:111
 msgid "Raw Data"
-msgstr ""
+msgstr "Dados Bruto"
 
 #: admin.py:119
 msgid "Period ID"
-msgstr ""
+msgstr "ID de Período"
 
-#: admin.py:123 admin.py:129
-msgid "Payment Period Start In"
-msgstr ""
+#: admin.py:123
+msgid "Payment Period Start At"
+msgstr "Início do Período de Pagamento em"
+
+#: admin.py:129
+msgid "Payment Period End At"
+msgstr "Fim do Período de Pagamento em"
 
 #: admin.py:135
 msgid "Payment Location"
-msgstr ""
+msgstr "Local de Pagamento"
 
 #: admin.py:139
 msgid "Payment Terminal Type"
-msgstr ""
+msgstr "Tipo de Terminal de Pagamento"
 
 #: admin.py:143
 msgid "Payment Terminal ID"
-msgstr ""
+msgstr "ID do Terminal de Pagamento"
 
 #: admin.py:147
 msgid "Payment Transaction ID"
-msgstr ""
+msgstr "ID de Transação de Pagamento"
 
 #: admin.py:151
 msgid "Payment Product ID"
-msgstr ""
+msgstr "ID do Produto de Pagamento"
 
 #: admin.py:158
 msgid "Product"
-msgstr ""
+msgstr "Produto"
 
 #: admin.py:162
 msgid "Service"
-msgstr ""
+msgstr "Serviço"
 
 #: admin.py:169
 msgid "Bank Name"
-msgstr ""
+msgstr "Nome do Banco"
 
 #: admin.py:173
 msgid "Bank Net Amount"
-msgstr ""
+msgstr "Valor Líquido do Banco"
 
 #: admin.py:177
 msgid "Bank Fee Percentage"
-msgstr ""
+msgstr "Porcentagem da Taxa do Banco"
 
 #: admin.py:181
 msgid "Bank Fee Amount"
-msgstr ""
+msgstr "Montante da Taxa do Banco"
 
 #: admin.py:185
 msgid "Bank Applied Min Amount"
-msgstr ""
+msgstr "Valor Mínimo Aplicado Pelo Banco"
 
 #: admin.py:187 admin.py:191 admin.py:210 admin.py:214
 msgid "Not Applied"
-msgstr ""
+msgstr "Não aplicado"
 
 #: admin.py:189
 msgid "Bank Applied Max Amount"
-msgstr ""
+msgstr "Valor Máximo Aplicado Pelo Banco"
 
 #: admin.py:196 models.py:130
 msgid "Net Amount"
-msgstr ""
+msgstr "Valor Líquido"
 
 #: admin.py:200
 msgid "Fee Percentage"
-msgstr ""
+msgstr "Porcentagem da Taxa"
 
 #: admin.py:204
 msgid "Fee Amount"
-msgstr ""
+msgstr "Montante da Taxa"
 
 #: admin.py:208
 msgid "Applied Min Amount"
-msgstr ""
+msgstr "Montante Mínimo Aplicado"
 
 #: admin.py:212
 msgid "Applied Max Amount"
-msgstr ""
+msgstr "Montante Máximo Aplicado"
 
 #: configs.py:56
 #, python-format
 msgid "Invalid app configuration key: '%s'"
-msgstr ""
+msgstr "Chave de configuração de aplicativo inválida: '%s'"
 
 #: configs.py:97
 msgid "days must be a number"
-msgstr ""
+msgstr "dias deve ser um número"
 
 #: management/commands/proxypay.py:12
 msgid "For testing payments with Proxypay in the development environment"
-msgstr ""
+msgstr "Para testar pagamentos com Proxypay no ambiente de desenvolvimento"
 
 #: management/commands/proxypay.py:22
-msgid ""
-"It is only possible to make fictitious payments in a sandbox environment"
-msgstr ""
+msgid "It is only possible to make fictitious payments in a sandbox environment"
+msgstr "Só é possível fazer pagamentos fictícios em um ambiente sandbox"
 
 #: management/commands/proxypay.py:31
 #, python-format
 msgid "Reference: '%s', paid successfully"
-msgstr ""
+msgstr "Referência: '%s', pago com sucesso"
 
 #: management/commands/proxypay.py:36
 msgid "Mock payment acknowledged automatically"
-msgstr ""
+msgstr "Pagamento simulado reconhecido automaticamente"
 
 #: management/commands/proxypay.py:39
 #, python-format
 msgid "Proxypay returns '%d' status code from API"
-msgstr ""
+msgstr "Proxypay retornou o código de status '%d' da API"
 
 #: models.py:53
 msgid "References"
-msgstr ""
+msgstr "Referências"
 
 #: models.py:56
 msgid "Waitng"
-msgstr ""
+msgstr "Esperando"
 
 #: models.py:57
 msgid "Paid"
-msgstr ""
+msgstr "Pago"
 
 #: models.py:60
 msgid "unique key"
-msgstr ""
+msgstr "chave única"
 
 #: models.py:61
 msgid "reference"
-msgstr ""
+msgstr "referência"
 
 #: models.py:62
 msgid "amount"
-msgstr ""
+msgstr "montante"
 
 #: models.py:63
 msgid "entity"
-msgstr ""
+msgstr "entidade"
 
 #: models.py:66
 msgid "status"
-msgstr ""
+msgstr "estado"
 
 #: models.py:69
 msgid "reference data fields"
-msgstr ""
+msgstr "campos de dados da referência"
 
 #: models.py:70
 msgid "payment data from proxypay"
-msgstr ""
+msgstr "dados de pagamento do proxypay"
 
 #: models.py:71
 msgid "additional data"
-msgstr ""
+msgstr "dados adicionais"
 
 #: models.py:74
 msgid "paid at"
-msgstr ""
+msgstr "pago em"
 
 #: models.py:75
 msgid "expires in"
-msgstr ""
+msgstr "expira em"
 
 #: models.py:76
 msgid "created at"
-msgstr ""
+msgstr "criado em"
 
 #: models.py:77
 msgid "update at"
-msgstr ""
+msgstr "atualizado em"
 
 #: models.py:99
 msgid "Expired"
-msgstr ""
+msgstr "Expirado"
 
 #: models.py:106
 msgid "Is Paid"
-msgstr ""
+msgstr "Está Pago"
 
 #: models.py:111
 msgid "Proxypay Fee"
-msgstr ""
+msgstr "Taxa Proxypay"
 
 #: models.py:118
 msgid "Bank Fee"
-msgstr ""
+msgstr "Taxa Banco"
 
 #: models.py:125
 msgid "Fees Expense"
-msgstr ""
+msgstr "Despesas de Taxas"
 
 #: models.py:144
 msgid "Error when trying to delete the reference in the Proxypay"
-msgstr ""
+msgstr "Erro ao tentar excluir a referência no Proxypay"
 
 #: models.py:193 models.py:196
 #, python-format
 msgid "Proxypay reference: '%s' <> key: '%s'"
-msgstr ""
+msgstr "Referência Proxypay: '%s' <> chave: '%s'"
 
 #: utils.py:17
 msgid "Error creating reference, <fields> Add 9 max custom fields"
-msgstr ""
+msgstr "Erro ao criar referência, <fields> Adicionar no máximo 9 campos personalizados"

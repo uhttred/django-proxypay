@@ -120,13 +120,13 @@ class ReferenceAdmin(admin.ModelAdmin):
     def payment_period_id(self, obj):
         return obj.payment_data.get('period_id')
     
-    @d(short_description=_('Payment Period Start In'))
+    @d(short_description=_('Payment Period Start At'))
     def payment_period_start_datetime(self, obj):
         return str_to_datetime(
             obj.payment_data.get('period_start_datetime')
         )
     
-    @d(short_description=_('Payment Period Start In'))
+    @d(short_description=_('Payment Period End At'))
     def payment_period_end_datetime(self, obj):
         return str_to_datetime(
             obj.payment_data.get('period_end_datetime')
