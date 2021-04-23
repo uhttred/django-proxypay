@@ -1,14 +1,11 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
-from dateutil import parser
+
+from django_admin_display import admin_display as d
 
 from .api import api
-from .configs import conf
-from .utils import (
-    get_validated_data_for_reference_creation,
-    get_calculated_fees
-)
+from .utils import get_validated_data_for_reference_creation, str_to_datetime
 from .exceptions import ProxypayException
 from .signals import reference_paid, reference_created
 
@@ -22,8 +19,6 @@ PAYMENT_STATUS_WAITING = 0
 PAYMENT_STATUS_PAID = 1
 
 # ==========================================================================================================
-
-"""Proxypay References Model Manager"""
 
 class ReferenceModelManager(models.Manager):
 
@@ -43,20 +38,7 @@ class ReferenceModelManager(models.Manager):
 
     def create(self, **kwargs):
         # creating the signal and add additional data
-        data = kwargs.pop('data', {})
-        data['proxypay_fee'] = get_calculated_fees(kwargs['amount'],(
-            conf.PROXYPAY_FEE.get('percent', 0),
-            conf.PROXYPAY_FEE.get('min_amount'),
-            conf.PROXYPAY_FEE.get('max_amount'),
-        ))
-        data['bank_fee'] = get_calculated_fees(kwargs['amount'],(
-            conf.BANK_FEE.get('percent', 0),
-            conf.BANK_FEE.get('min_amount'),
-            conf.BANK_FEE.get('max_amount'),
-        ))
-        if data['bank_fee']:
-            data['bank_fee']['name'] = conf.BANK_FEE.get('name')
-        reference = super(ReferenceModelManager, self).create(data=data, **kwargs)
+        reference = super(ReferenceModelManager, self).create(**kwargs)
         # Dispatching Signal
         reference_created.send(
             reference.__class__, 
@@ -64,13 +46,11 @@ class ReferenceModelManager(models.Manager):
         )
         return reference
 
-"""Proxypay References Model"""
-
 class Reference(models.Model):
     
     class Meta:
         verbose_name = _('Reference')
-        verbose_name_plural = _('Referencecs')
+        verbose_name_plural = _('References')
     
     class Status(models.IntegerChoices):
         WAITING = PAYMENT_STATUS_WAITING, _('Waitng')
@@ -86,19 +66,15 @@ class Reference(models.Model):
     status              = models.IntegerField(_('status'), default=Status.WAITING, choices=Status.choices, editable=False)
 
     # data fields
-    fields              = models.JSONField(default=dict) # fileds in proxypay api data reference
-    payment             = models.JSONField(default=None, null=True) # payment data form proxypay
-    data                = models.JSONField(default=dict) # addtional data
+    fields              = models.JSONField(_('reference data fields'), default=dict) # fileds in proxypay api data reference
+    payment             = models.JSONField(_('payment data from proxypay'), default=None, null=True) # payment data form proxypay
+    data                = models.JSONField(_('additional data'), default=dict) # addtional data
 
     # date
     paid_at    = models.DateTimeField(_('paid at'), default=None, null=True)
     expires_in = models.DateTimeField(_('expires in'), null=True, default=None)
     created_at = models.DateTimeField(_('created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('update at'), auto_now=True)
-
-    ###
-    ##  Manager
-    #
 
     objects = ReferenceModelManager()
 
@@ -108,14 +84,52 @@ class Reference(models.Model):
     #
 
     @property
+    def payment_data(self):
+        return self.payment or {}
+    
+    @property
+    def bank_fee_data(self):
+        return self.data.get('bank_fee', {})
+    
+    @property
+    def proxypay_fee_data(self):
+        return self.data.get('proxypay_fee', {})
+
+    # @property
+    @d(short_description=_('Expired'), boolean=True)
     def expired(self):
         if self.expires_in:
             return self.expires_in < now()
         return False
 
-    @property
+    # @property
+    @d(short_description=_('Is Paid'), boolean=True)
     def is_paid(self):
         return self.status == Reference.Status.PAID
+    
+    @property
+    @d(short_description=_('Proxypay Fee'))
+    def proxypay_fee(self):
+        if (fee := self.data.get('proxypay_fee')):
+            return fee.get('expense')
+        return 0
+    
+    @property
+    @d(short_description=_('Bank Fee'))
+    def bank_fee(self):
+        if (fee := self.data.get('bank_fee')):
+            return fee.get('expense')
+        return 0
+        
+    @property
+    @d(short_description=_('Fees Expense'))
+    def fees_expense(self):
+        return self.proxypay_fee + self.bank_fee
+    
+    @property
+    @d(short_description=_('Net Amount'))
+    def net_amount(self):
+        return self.amount - self.fees_expense
 
     # --------------------------------------------------------------------------------------------
     ###
@@ -139,7 +153,7 @@ class Reference(models.Model):
             self.payment = payment_data
             self.status  = Reference.Status.PAID
             try:
-                self.paid_at = parser.isoparse(self.payment.get('datetime'))
+                self.paid_at = str_to_datetime(self.payment.get('datetime'))
             except:
                 self.paid_at = now()  
             self.save()
@@ -176,10 +190,10 @@ class Reference(models.Model):
     #
 
     def __str__(self):
-        return  _("Proxypay reference: '%s'") % self.reference
+        return  _("Proxypay reference: '%s' <> key: '%s'") % (self.reference, self.key)
 
     def __repr__(self):
-        return _("Proxypay reference: '%s'") % self.reference
+        return _("Proxypay reference: '%s' <> key: '%s'") % (self.reference, self.key)
 
     # --------------------------------------------------------------------------------------------
     ###

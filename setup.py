@@ -32,7 +32,7 @@ setuptools.setup(
     install_requires=[
         "Django>=3",
         "requests>=2",
-        "python-dateutil"
+        "django-admin-display"
     ],
     python_requires=">=3.6",
     classifiers=[

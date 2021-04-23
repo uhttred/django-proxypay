@@ -16,20 +16,14 @@ DEFAULTS = {
 
     # payments
     'ACCEPT_UNRECOGNIZED_PAYMENT': False,
+    # If true, in sandbox env mode fictitious payments will be processed automatically without the proxypay webhook.
+    # Useful if you want to test local payments without configuring the endpoint watch payments on proxypay
+    'ACKNOWLEDGE_MOCK_PAYMENT_LOCALLY_AUTOMATICALLY': True,
 
-    # fees
-    'PROXYPAY_FEE': {
-        'name': 'Proxypay',
-        'percent': 0.5,
-        'min_amount': 50,
-        'max_amount': 1000
-    },
-    'BANK_FEE': {
-        'name': '',
-        'percent': 0,
-        'min_amount': 0,
-        'max_amount': 0
-    },
+    # proxypay defaults fees
+    # fee must be a tuple in this order: Fee Name, Fee Percent, Min Amount, Max Amount
+    'PROXYPAY_FEE': ('Proxypay', 0.25, 50, 1000),
+    'BANK_FEE': (None, 0, 0, 0),
 
     # proxypay
     'API_PRODUCTION_BASE_URL': 'https://api.proxypay.co.ao',

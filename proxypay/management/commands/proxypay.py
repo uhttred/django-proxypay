@@ -1,53 +1,40 @@
-###
-##  Django Proxypay Payment Test
-#
-
-# django stuff
 from django.core.management.base import BaseCommand
+from django.utils.translation import gettext_lazy as _
 
-# proxypay stuff
 from proxypay.api import api
-from proxypay.models import Reference
-from proxypay.conf import PP_CONFIG_DEFAULT_DEVELOPMENT_ENV
+from proxypay.references import get
+from proxypay.configs import conf
 
 # =====================================================================================================================
 
 class Command(BaseCommand):
 
-    help = 'For testing payments with Proxypay in the development environment'
+    help = _('For testing payments with Proxypay in the development environment')
 
     def add_arguments(self, parser):
         parser.add_argument('command', nargs='+', type=str)
 
     def handle(self, *args, **options):
-
-        # command
         args = options.pop('command')
-
         # test payment
         if args[0] == 'pay':
-
-            if api.env != PP_CONFIG_DEFAULT_DEVELOPMENT_ENV:
-                raise Exception('It is only possible to make fictitious payments in a sandbox environment')
-
-            # getting the reference id from args
-            reference_id = int(args[1])
-            # get Reference model instance
-            reference = Reference.objects.get(reference=reference_id)
-            # paying
+            if api.env != conf.SANDBOX_ENV:
+                raise Exception(_('It is only possible to make fictitious payments in a sandbox environment'))
+            
+            reference = get(key=args[1], reference_id=args[1])
             r = api.post('/payments', data={
                 'amount': float(reference.amount),
                 'reference_id': reference.reference
             })
-            # r status
+
             if r.status_code == 200:
-                # paid successfully
-                payment = r.json()
-                #
-                reference.paid(payment)
-                # 
-                self.stdout.write(self.style.SUCCESS(f"Reference: <{reference.reference}>, paid successfully"))
-                #
-                api.acknowledge_payment(payment.get('id'))
+                self.stdout.write(self.style.SUCCESS(_("Reference: '%s', paid successfully") % reference.reference))
+                if conf.ACKNOWLEDGE_MOCK_PAYMENT_LOCALLY_AUTOMATICALLY:
+                    payment = r.json()
+                    reference.paid(payment)
+                    api.acknowledge_payment(payment.get('id'))
+                    self.stdout.write(self.style.SUCCESS(_('Mock payment acknowledged automatically')))
             else:
-                self.stdout.write(self.style.ERROR(f"Proxypay returns {r.status_code} status code from API"))
+                self.stdout.write(self.style.ERROR(
+                    _("Proxypay returns '%d' status code from API") % r.status_code
+                ))

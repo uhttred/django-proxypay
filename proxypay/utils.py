@@ -1,5 +1,6 @@
 import datetime
 import hmac, hashlib
+from django.utils.dateparse import parse_datetime
 
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -43,7 +44,7 @@ def check_api_signature(signature, raw_http_body_msg, token=None):
 
 # ==============================================================================================
 
-def get_calculated_fees(amount, fees: tuple, return_as_dict: bool = True):
+def get_calculated_fees(amount, fee: tuple, name: str = None, return_as_dict: bool = True):
     """
     Calculates the fees for an amount.
     fees must be a tuple containing the following values in the following order:
@@ -52,7 +53,7 @@ def get_calculated_fees(amount, fees: tuple, return_as_dict: bool = True):
     (0.25, None, None)
     """
 
-    percent, min_amount, max_amount = fees
+    percent, min_amount, max_amount = fee
     if percent:
         fee_amount = amount * (percent / 100)
         if min_amount and fee_amount < min_amount:
@@ -64,6 +65,7 @@ def get_calculated_fees(amount, fees: tuple, return_as_dict: bool = True):
         
         if return_as_dict:
             return {
+                'name': name,
                 'amount': amount,
                 'net_amount': amount - expense,
                 'expense': expense,
@@ -73,4 +75,11 @@ def get_calculated_fees(amount, fees: tuple, return_as_dict: bool = True):
                 'applied_max_amount': max_amount
             }
         return amount, amount - expense, expense, fee_amount
+    return None
+
+# ==============================================================================================
+
+def str_to_datetime(datetime_str):
+    if datetime_str:
+        return parse_datetime(datetime_str)
     return None
