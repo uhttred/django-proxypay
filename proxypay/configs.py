@@ -9,22 +9,18 @@ DEFAULTS = {
     # entity
     'PRIVATE_KEY': None,
     'ENTITY': None,
-
     # references
     'REFERENCE_LIFE_TIME_IN_DAYS': 1,
     'REFERENCE_UUID_KEY': 'djpp_uuid_ref',
-
     # payments
     'ACCEPT_UNRECOGNIZED_PAYMENT': False,
     # If true, in sandbox env mode fictitious payments will be processed automatically without the proxypay webhook.
     # Useful if you want to test local payments without configuring the endpoint watch payments on proxypay
     'ACKNOWLEDGE_MOCK_PAYMENT_LOCALLY_AUTOMATICALLY': True,
-
     # proxypay defaults fees
     # fee must be a tuple in this order: Fee Name, Fee Percent, Min Amount, Max Amount
     'PROXYPAY_FEE': ('Proxypay', 0.25, 50, 1000),
     'BANK_FEE': (None, 0, 0, 0),
-
     # proxypay
     'API_PRODUCTION_BASE_URL': 'https://api.proxypay.co.ao',
     'API_SANDBOX_BASE_URL': 'https://api.sandbox.proxypay.co.ao',

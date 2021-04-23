@@ -32,15 +32,18 @@ Or from this repository:
 
 #### Requirements
 
-* Python ``3.7; 3.8``
-* Django ``2.2; 3.0``
+* Python ``3.8; ``
+* Django ``3.0;``
 * requests ``2.23``
+* django-admin-display
 
 These are the officially supported python and package versions. Other versions will probably work
 
 ## Configurations
 
 As stated above, Django Proxypay is a Django Application. To configure your project you simply need to add ``proxypay`` to your ``INSTALLED_APPS`` and configure the ``PROXYPAY`` variable in the ``settings.py`` file
+
+for more details on how to configure the PROXYPAY variable, access the proxypay.conf file
 
 Like the example below, file ``settings.py``:
 
@@ -53,20 +56,30 @@ INSTALLED_APPS = [
 # Proxypay Configurations
 PROXYPAY = {
     # (str) Your Proxypay authorization token key
-    'PRIVATE_KEY': os.environ.get('PROXYPAY_PRIVATE_KEY'),
+    'PRIVATE_KEY': os.environ.get('PP_PRIVATE_KEY'),
     # (int) Your Proxypay Entity ID
-    'ENTITY': os.environ.get('PROXYPAY_ENTITY'),
-    # (int) Optional, Default days to expire a reference
-    'REFERENCE_DAYS': os.environ.get('PROXYPAY_REFERENCE_DAYS'),
-    # (bool) default: False
+    'ENTITY': os.environ.get('PP_ENTITY'),
+    # (int) Optional, Default: 1 
+    # days to expire a reference
+    'REFERENCE_LIFE_TIME_IN_DAYS': os.environ.get('PP_REFERENCE_LIFE_TIME_IN_DAYS'),
+    # (bool) Optional, default: False
     # If True, proxypay.payments.watch will return status 200
     # if a payment confirmation is sent whose reference has not been registered
-    'ACCEPT_UNRECOGNIZED_PAYMENT': os.environ.get('ACCEPT_UNRECOGNIZED_PAYMENT'),
+    'ACCEPT_UNRECOGNIZED_PAYMENT': os.environ.get('PP_ACCEPT_UNRECOGNIZED_PAYMENT'),
+    # (bool) Optional, default: True
+    # If true, in sandbox env mode fictitious payments will be processed automatically without the proxypay webhook.
+    # Useful if you want to test local payments without configuring the endpoint watch payments on proxypay
+    'ACKNOWLEDGE_MOCK_PAYMENT_LOCALLY_AUTOMATICALLY': os.environ.get('PP_ACKNOWLEDGE_MOCK_PAYMENT_LOCALLY_AUTOMATICALLY')
     # (str) Optional, the proxypay api environment to use
     # If not set, by default Proxypay will use the sandbox environment if settings.DEBUG is True 
     # and produnction if is False
     # If set, the value must be sandbox or production
-    'ENV': os.environ.get('PROXYPAY_ENV')
+    'ENV': os.environ.get('PP_ENV')
+    # (tuple) Optional
+    # fees
+    # fee must be a tuple in this order: Fee Name, Fee Percent, Min Amount, Max Amount
+    'PROXYPAY_FEE': ('Proxypay', 0.25, 50, 1000),
+    'BANK_FEE': (None, 0, 0, 0),
 }
 ```
 
@@ -95,7 +108,8 @@ reference2 = create(
     # (dict) Optional, custom_fields to add to refence instance and proxypay payment data
     # Make sure to use just strings
     fields={
-        'product_type': 'some'
+        'product': 'some',
+        'service': 'some service name'
     },
     # (int) Optional, Number of days to expire the reference
     days=3,
@@ -118,7 +132,7 @@ from django.urls import path
 from django.contrib import admin
 
 # proxypay watch payments view
-from proxypay.payments import watch_payments
+from proxypay.views import watch_payments
 
 urlpatterns = [
     path( "admin/", admin.site.urls),
@@ -157,7 +171,7 @@ In development mode, you can create fictitious payments to test your application
 
 ```bash
 
-# 123902092 a reference id
+# user reference ID or key
 python manage.py proxypay pay 123902092
 
 ```

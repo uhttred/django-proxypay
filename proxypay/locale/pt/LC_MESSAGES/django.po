@@ -1,0 +1,264 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-04-23 15:24+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: admin.py:103 models.py:52
+msgid "Reference"
+msgstr ""
+
+#: admin.py:104
+msgid "Amount and Fees"
+msgstr ""
+
+#: admin.py:105
+msgid "Related Product and Service"
+msgstr ""
+
+#: admin.py:106
+msgid "Proxypay Amount and Fee"
+msgstr ""
+
+#: admin.py:107
+msgid "Bank Amount and Fee"
+msgstr ""
+
+#: admin.py:108
+msgid "Proxypay Payment Details"
+msgstr ""
+
+#: admin.py:109
+msgid "Dates"
+msgstr ""
+
+#: admin.py:110
+msgid "Status"
+msgstr ""
+
+#: admin.py:111
+msgid "Raw Data"
+msgstr ""
+
+#: admin.py:119
+msgid "Period ID"
+msgstr ""
+
+#: admin.py:123 admin.py:129
+msgid "Payment Period Start In"
+msgstr ""
+
+#: admin.py:135
+msgid "Payment Location"
+msgstr ""
+
+#: admin.py:139
+msgid "Payment Terminal Type"
+msgstr ""
+
+#: admin.py:143
+msgid "Payment Terminal ID"
+msgstr ""
+
+#: admin.py:147
+msgid "Payment Transaction ID"
+msgstr ""
+
+#: admin.py:151
+msgid "Payment Product ID"
+msgstr ""
+
+#: admin.py:158
+msgid "Product"
+msgstr ""
+
+#: admin.py:162
+msgid "Service"
+msgstr ""
+
+#: admin.py:169
+msgid "Bank Name"
+msgstr ""
+
+#: admin.py:173
+msgid "Bank Net Amount"
+msgstr ""
+
+#: admin.py:177
+msgid "Bank Fee Percentage"
+msgstr ""
+
+#: admin.py:181
+msgid "Bank Fee Amount"
+msgstr ""
+
+#: admin.py:185
+msgid "Bank Applied Min Amount"
+msgstr ""
+
+#: admin.py:187 admin.py:191 admin.py:210 admin.py:214
+msgid "Not Applied"
+msgstr ""
+
+#: admin.py:189
+msgid "Bank Applied Max Amount"
+msgstr ""
+
+#: admin.py:196 models.py:130
+msgid "Net Amount"
+msgstr ""
+
+#: admin.py:200
+msgid "Fee Percentage"
+msgstr ""
+
+#: admin.py:204
+msgid "Fee Amount"
+msgstr ""
+
+#: admin.py:208
+msgid "Applied Min Amount"
+msgstr ""
+
+#: admin.py:212
+msgid "Applied Max Amount"
+msgstr ""
+
+#: configs.py:56
+#, python-format
+msgid "Invalid app configuration key: '%s'"
+msgstr ""
+
+#: configs.py:97
+msgid "days must be a number"
+msgstr ""
+
+#: management/commands/proxypay.py:12
+msgid "For testing payments with Proxypay in the development environment"
+msgstr ""
+
+#: management/commands/proxypay.py:22
+msgid ""
+"It is only possible to make fictitious payments in a sandbox environment"
+msgstr ""
+
+#: management/commands/proxypay.py:31
+#, python-format
+msgid "Reference: '%s', paid successfully"
+msgstr ""
+
+#: management/commands/proxypay.py:36
+msgid "Mock payment acknowledged automatically"
+msgstr ""
+
+#: management/commands/proxypay.py:39
+#, python-format
+msgid "Proxypay returns '%d' status code from API"
+msgstr ""
+
+#: models.py:53
+msgid "References"
+msgstr ""
+
+#: models.py:56
+msgid "Waitng"
+msgstr ""
+
+#: models.py:57
+msgid "Paid"
+msgstr ""
+
+#: models.py:60
+msgid "unique key"
+msgstr ""
+
+#: models.py:61
+msgid "reference"
+msgstr ""
+
+#: models.py:62
+msgid "amount"
+msgstr ""
+
+#: models.py:63
+msgid "entity"
+msgstr ""
+
+#: models.py:66
+msgid "status"
+msgstr ""
+
+#: models.py:69
+msgid "reference data fields"
+msgstr ""
+
+#: models.py:70
+msgid "payment data from proxypay"
+msgstr ""
+
+#: models.py:71
+msgid "additional data"
+msgstr ""
+
+#: models.py:74
+msgid "paid at"
+msgstr ""
+
+#: models.py:75
+msgid "expires in"
+msgstr ""
+
+#: models.py:76
+msgid "created at"
+msgstr ""
+
+#: models.py:77
+msgid "update at"
+msgstr ""
+
+#: models.py:99
+msgid "Expired"
+msgstr ""
+
+#: models.py:106
+msgid "Is Paid"
+msgstr ""
+
+#: models.py:111
+msgid "Proxypay Fee"
+msgstr ""
+
+#: models.py:118
+msgid "Bank Fee"
+msgstr ""
+
+#: models.py:125
+msgid "Fees Expense"
+msgstr ""
+
+#: models.py:144
+msgid "Error when trying to delete the reference in the Proxypay"
+msgstr ""
+
+#: models.py:193 models.py:196
+#, python-format
+msgid "Proxypay reference: '%s' <> key: '%s'"
+msgstr ""
+
+#: utils.py:17
+msgid "Error creating reference, <fields> Add 9 max custom fields"
+msgstr ""

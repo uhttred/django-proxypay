@@ -3,6 +3,9 @@ HISTORY
 
 > Insert new release notes below this line
 
+## 1.3.0 ( 23, Abril, 2021 )
+
+* upgrade, see README.md file
 * fixed circular import
 
 ## 1.2.5 ( 14, Fev, 2021 )

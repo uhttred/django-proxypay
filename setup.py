@@ -1,5 +1,4 @@
-#
-import os, re, setuptools
+import setuptools
 from proxypay import __version__ as VERSION
 
 # Long Description
@@ -34,7 +33,7 @@ setuptools.setup(
         "requests>=2",
         "django-admin-display"
     ],
-    python_requires=">=3.6",
+    python_requires=">=3.8",
     classifiers=[
         "Environment :: Web Environment",
         "Framework :: Django",
