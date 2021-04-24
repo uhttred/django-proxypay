@@ -1,9 +1,11 @@
+from django import forms
 from django.contrib import admin
-from proxypay.models import Reference
 from django.utils.translation import ugettext_lazy as _
-
 from django_admin_display import admin_display as d
+
 from proxypay.utils import str_to_datetime
+from proxypay.models import Reference
+from proxypay.references import create
 
 # --------------------------------------------------------------------------------------------
 
@@ -61,6 +63,24 @@ LIST_RAW_DATA = (
     'data'
 )
 
+# --------------------------------------------------------------------------------------------
+
+class AddForm(forms.ModelForm):
+    class Meta:
+        model = Reference
+        fields = ('amount', 'days')
+    
+    days = forms.IntegerField(max_value=45, initial=1, label=_('Days'),help_text=_('days for expiration'))
+
+    def save(self, *args, **kwargs):
+        super().save(commit=False)
+        return create(
+            amount=float(self.cleaned_data.get('amount')),
+            days=self.cleaned_data.get('days')
+        )
+
+# --------------------------------------------------------------------------------------------
+
 @admin.register(Reference)
 class ReferenceAdmin(admin.ModelAdmin):
 
@@ -77,9 +97,9 @@ class ReferenceAdmin(admin.ModelAdmin):
         'fees_expense',
         'bank_fee',
         'proxypay_fee',
-        'key',
         'created_at',
         'paid_at',
+        'key',
         'expired',
         'is_paid'
     )
@@ -112,6 +132,7 @@ class ReferenceAdmin(admin.ModelAdmin):
     )
 
     date_hierarchy   = 'created_at'
+    form = AddForm
 
     # --------------------------------------------------------------------------------------------
     # Payment Details
@@ -216,10 +237,27 @@ class ReferenceAdmin(admin.ModelAdmin):
     # --------------------------------------------------------------------------------------------
     ###
     ## Base Permissions
+    #
+
+    def get_readonly_fields(self, request, obj=None):
+        if not obj: # editing an existing object
+            return tuple((field for field in self.readonly_fields if field not in ('amount', 'days')))
+        return self.readonly_fields
+    
+    def get_fieldsets(self, request, obj = None):
+        if not obj:
+            return (
+                (_('Creating Proxypay Payment Reference'), {'fields': ('amount', 'days')}),
+            )
+        return super().get_fieldsets(request, obj=obj)
+
+    # --------------------------------------------------------------------------------------------
+    ###
+    ## Base Permissions
     # 
 
-    def has_add_permission(self, *args, **kwargs):
-        return False
+    # def has_add_permission(self, *args, **kwargs):
+    #     return False
 
     def has_delete_permission(self, *args, **kwargs):
         return False

@@ -74,7 +74,7 @@ PROXYPAY = {
     # If not set, by default Proxypay will use the sandbox environment if settings.DEBUG is True 
     # and produnction if is False
     # If set, the value must be sandbox or production
-    'ENV': os.environ.get('PP_ENV')
+    'ENV': os.environ.get('PP_ENV'),
     # (tuple) Optional
     # fees
     # fee must be a tuple in this order: Fee Name, Fee Percent, Min Amount, Max Amount
@@ -171,7 +171,7 @@ In development mode, you can create fictitious payments to test your application
 
 ```bash
 
-# user reference ID or key
+# reference ID or key
 python manage.py proxypay pay 123902092
 
 ```

@@ -5,6 +5,7 @@ HISTORY
 
 ## 1.3.0 ( 23, Abril, 2021 )
 
+* creating references from admin site
 * upgrade, see README.md file
 * fixed circular import
 

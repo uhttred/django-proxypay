@@ -1,3 +1,4 @@
+import decimal
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
@@ -5,7 +6,11 @@ from django.utils.timezone import now
 from django_admin_display import admin_display as d
 
 from .api import api
-from .utils import get_validated_data_for_reference_creation, str_to_datetime
+from .utils import (
+    get_validated_data_for_reference_creation,
+    get_decimal_value,
+    str_to_datetime
+)
 from .exceptions import ProxypayException
 from .signals import reference_paid, reference_created
 
@@ -59,7 +64,7 @@ class Reference(models.Model):
     # reference id
     key                 = models.CharField(_('unique key'), max_length=125, unique=True, editable=False, null=True, default=None)
     reference           = models.CharField(_('reference'), editable=False, max_length=100)
-    amount              = models.DecimalField(_('amount'), max_digits=12, decimal_places=2, editable=False)
+    amount              = models.DecimalField(_('amount'), max_digits=12, decimal_places=2)
     entity              = models.CharField(_('entity'), max_length=100, null=True, default=None, editable=False)
     
     # reference payment status: paid, expired, waiting
@@ -111,20 +116,20 @@ class Reference(models.Model):
     @d(short_description=_('Proxypay Fee'))
     def proxypay_fee(self):
         if (fee := self.data.get('proxypay_fee')):
-            return fee.get('expense')
+            return fee.get('expense', 0)
         return 0
     
     @property
     @d(short_description=_('Bank Fee'))
     def bank_fee(self):
         if (fee := self.data.get('bank_fee')):
-            return fee.get('expense')
+            return fee.get('expense', 0)
         return 0
         
     @property
     @d(short_description=_('Fees Expense'))
     def fees_expense(self):
-        return self.proxypay_fee + self.bank_fee
+        return decimal.Decimal('%.2f' % (self.proxypay_fee + self.bank_fee))
     
     @property
     @d(short_description=_('Net Amount'))

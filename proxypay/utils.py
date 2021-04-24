@@ -1,5 +1,6 @@
 import datetime
 import hmac, hashlib
+from decimal import Decimal
 from django.utils.dateparse import parse_datetime
 
 from django.utils.timezone import now
@@ -41,6 +42,11 @@ def check_api_signature(signature, raw_http_body_msg, token=None):
     ).hexdigest()
     # chack vall
     return signature == calc_signature
+
+# ==============================================================================================
+
+def get_decimal_value(amount):
+    return Decimal('%.2f' & amount)
 
 # ==============================================================================================
 
