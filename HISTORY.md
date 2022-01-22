@@ -3,6 +3,10 @@ HISTORY
 
 > Insert new release notes below this line
 
+## 1.3.1 ( 22, Jan, 2022 )
+
+* Change ``ugettext_lazy`` to ``gettext_lazy`` in Reference model.
+
 ## 1.3.0 ( 23, Abril, 2021 )
 
 * creating references from admin site
